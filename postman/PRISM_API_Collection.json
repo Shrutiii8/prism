@@ -1,0 +1,268 @@
+{
+  "info": {
+    "name": "PRISM Regulatory Platform API",
+    "_postman_id": "prism-platform-api-collection-2026",
+    "description": "Comprehensive Postman test collection for PRISM (Integrated Institution Complaint Monitoring and Coordination Platform).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 Authentication",
+      "item": [
+        {
+          "name": "Login SuperAdmin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.environment.set(\"authToken\", jsonData.access_token);",
+                  "pm.collectionVariables.set(\"authToken\", jsonData.access_token);",
+                  "pm.test(\"Status is 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Has access token\", function () { pm.expect(jsonData.access_token).to.be.a('string'); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@prism.gov.in\",\n  \"password\": \"Prism@2026!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get Current Profile (/auth/me)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "me"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 Institutions",
+      "item": [
+        {
+          "name": "List Institutions",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/institutions?limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["institutions"],
+              "query": [{ "key": "limit", "value": "10" }]
+            }
+          }
+        },
+        {
+          "name": "Check Duplicate Institution",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/institutions/check-duplicate?aicte_id=1-100293841&name=Apex%20Institute&state=Delhi",
+              "host": ["{{baseUrl}}"],
+              "path": ["institutions", "check-duplicate"],
+              "query": [
+                { "key": "aicte_id", "value": "1-100293841" },
+                { "key": "name", "value": "Apex Institute" },
+                { "key": "state", "value": "Delhi" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 Complaints",
+      "item": [
+        {
+          "name": "List Complaints",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/complaints?limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["complaints"],
+              "query": [{ "key": "limit", "value": "10" }]
+            }
+          }
+        },
+        {
+          "name": "Complaint Categories",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/complaints/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["complaints", "categories"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 AI Overlap Intelligence",
+      "item": [
+        {
+          "name": "Get Overlap Matches",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ai/matches?classification=HIGH",
+              "host": ["{{baseUrl}}"],
+              "path": ["ai", "matches"],
+              "query": [{ "key": "classification", "value": "HIGH" }]
+            }
+          }
+        },
+        {
+          "name": "Related Groups",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ai/related-groups",
+              "host": ["{{baseUrl}}"],
+              "path": ["ai", "related-groups"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 Executive Analytics & Reports",
+      "item": [
+        {
+          "name": "Executive Dashboard KPIs",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/analytics/dashboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["analytics", "dashboard"]
+            }
+          }
+        },
+        {
+          "name": "Institution-Wise Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/analytics/reports/institution_wise",
+              "host": ["{{baseUrl}}"],
+              "path": ["analytics", "reports", "institution_wise"]
+            }
+          }
+        },
+        {
+          "name": "Export Report CSV",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/analytics/reports/institution_wise/export-csv",
+              "host": ["{{baseUrl}}"],
+              "path": ["analytics", "reports", "institution_wise", "export-csv"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 Audit Trail",
+      "item": [
+        {
+          "name": "Query Audit Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/audit?limit=25",
+              "host": ["{{baseUrl}}"],
+              "path": ["audit"],
+              "query": [{ "key": "limit", "value": "25" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 System Settings",
+      "item": [
+        {
+          "name": "Get System Settings",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/settings",
+              "host": ["{{baseUrl}}"],
+              "path": ["settings"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+

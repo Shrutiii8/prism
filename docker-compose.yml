@@ -1,0 +1,139 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database Service
+  postgres:
+    image: postgres:16-alpine
+    container_name: prism-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-prism_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-PrismSecure2026DB!}
+      POSTGRES_DB: ${POSTGRES_DB:-prism_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-prism_admin} -d ${POSTGRES_DB:-prism_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - prism-network
+
+  # Redis In-Memory Cache & Job Queue
+  redis:
+    image: redis:7-alpine
+    container_name: prism-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - prism-network
+
+  # Apache Kafka - Event-Streaming Integration
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: prism-zookeeper
+    restart: unless-stopped
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - prism-network
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: prism-kafka
+    restart: unless-stopped
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - prism-network
+
+  # Backend REST API Service
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: prism-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      APP_ENV: production
+      DEBUG: "false"
+      SECRET_KEY: ${SECRET_KEY:-prism-super-secret-enterprise-key-2026-production-secure}
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-prism_admin}:${POSTGRES_PASSWORD:-PrismSecure2026DB!}@postgres:5432/${POSTGRES_DB:-prism_db}
+      SYNC_DATABASE_URL: postgresql://${POSTGRES_USER:-prism_admin}:${POSTGRES_PASSWORD:-PrismSecure2026DB!}@postgres:5432/${POSTGRES_DB:-prism_db}
+      REDIS_URL: redis://redis:6379/0
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      UPLOAD_DIR: /app/storage/uploads
+    ports:
+      - "8000:8000"
+    volumes:
+      - storage_uploads:/app/storage/uploads
+    networks:
+      - prism-network
+
+  # Frontend Web Client
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: prism-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: http://backend:8000/api/v1
+    ports:
+      - "3000:3000"
+    networks:
+      - prism-network
+
+  # Nginx Reverse Proxy & SSL Gateway
+  nginx:
+    image: nginx:alpine
+    container_name: prism-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./infrastructure/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - prism-network
+
+volumes:
+  postgres_data:
+  redis_data:
+  storage_uploads:
+
+networks:
+  prism-network:
+    driver: bridge
+
