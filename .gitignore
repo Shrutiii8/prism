@@ -29,6 +29,8 @@ htmlcov/
 *.sqlite3
 storage/
 prism.db
+migrate_to_neon.py
+scripts/migrate_to_neon.py
 
 # Logs
 logs/
