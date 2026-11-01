@@ -76,9 +76,9 @@ export default function LandingNav({ onRequestDemo }: LandingNavProps) {
             : "bg-transparent border-b border-transparent"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 h-18 sm:h-20 flex items-center justify-between">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 h-18 sm:h-20 flex items-center justify-between gap-4">
           {/* Left: Logo & Wordmark */}
-          <Link href="/" className="flex items-center gap-3 group shrink-0">
+          <Link href="/" className="flex items-center gap-3 group shrink-0 mr-8 xl:mr-16">
             <PrismMark variant="nav" size={28} />
             <div className="flex flex-col">
               <span className="font-mono text-sm sm:text-base font-black tracking-wider text-canvas-text group-hover:text-saffron transition-colors">
@@ -93,7 +93,7 @@ export default function LandingNav({ onRequestDemo }: LandingNavProps) {
           {/* Desktop Links with Rolling Ball / Gliding Pill Selection */}
           <nav
             onMouseLeave={() => setHoveredIdx(null)}
-            className="hidden lg:flex items-center gap-6 xl:gap-8 2xl:gap-10"
+            className="hidden lg:flex items-center justify-center gap-4 xl:gap-7 2xl:gap-9"
           >
             {navLinks.map((link, idx) => {
               const isSelected = (hoveredIdx !== null ? hoveredIdx : activeIdx) === idx;
@@ -103,7 +103,7 @@ export default function LandingNav({ onRequestDemo }: LandingNavProps) {
                   href={link.href}
                   onClick={() => setActiveIdx(idx)}
                   onMouseEnter={() => setHoveredIdx(idx)}
-                  className="relative px-3.5 py-1.5 font-sans text-xs sm:text-[13px] tracking-wide transition-colors duration-200 select-none group"
+                  className="relative px-3 py-1.5 xl:px-3.5 font-sans text-xs sm:text-[13px] tracking-wide transition-colors duration-200 select-none group shrink-0"
                 >
                   {/* Rolling Pill Selection Indicator */}
                   {isSelected && (
@@ -150,17 +150,9 @@ export default function LandingNav({ onRequestDemo }: LandingNavProps) {
           </nav>
 
           {/* Right: Theme Toggle & CTAs */}
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-3 sm:gap-4 shrink-0 ml-8 xl:ml-16">
             {/* Theme Toggle Button */}
             <ThemeToggle />
-
-            {/* Ghost Track CTA */}
-            <a
-              href="#track"
-              className="hidden md:inline-flex items-center font-mono text-[11px] uppercase tracking-wider text-canvas-muted hover:text-canvas-text px-3 py-1.5 transition-colors"
-            >
-              Track Case
-            </a>
 
             {/* Solid Official Login CTA */}
             <Link
