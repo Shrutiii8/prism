@@ -31,12 +31,13 @@ export default function CustomCursor() {
     const handleElementHover = (e: MouseEvent) => {
       const target = (e.target as HTMLElement).closest("[data-cursor]") as HTMLElement | null;
       if (target) {
-        const text = target.getAttribute("data-cursor") || "";
-        setCursorText(text);
+        setCursorText(target.getAttribute("data-cursor") || "");
         setCursorVariant("hover");
       } else {
-        const button = (e.target as HTMLElement).closest("button, a") as HTMLElement | null;
-        if (button) {
+        const interactive = (e.target as HTMLElement).closest(
+          "button, a, input, select, textarea, [role='button'], [tabindex='0'], .cursor-pointer, label"
+        ) as HTMLElement | null;
+        if (interactive) {
           setCursorText("");
           setCursorVariant("hover");
         } else {
@@ -63,7 +64,7 @@ export default function CustomCursor() {
 
   return (
     <motion.div
-      className="fixed top-0 left-0 pointer-events-none z-[9999] rounded-full mix-blend-difference"
+      className="fixed top-0 left-0 pointer-events-none z-[9999] flex items-center justify-center font-mono text-[10px] font-bold uppercase tracking-wider text-black mix-blend-difference"
       style={{
         x: cursorX,
         y: cursorY,
@@ -71,15 +72,22 @@ export default function CustomCursor() {
         translateY: "-50%",
       }}
       animate={{
-        width: cursorVariant === "hover" ? 18 : 6,
-        height: cursorVariant === "hover" ? 18 : 6,
-        backgroundColor: cursorVariant === "hover"
-          ? "rgba(255, 255, 255, 0.2)"
-          : "#ffffff",
-        border: cursorVariant === "hover" ? "1.5px solid rgba(255, 255, 255, 0.9)" : "none",
+        width: cursorText ? 64 : cursorVariant === "hover" ? 36 : 10,
+        height: cursorText ? 64 : cursorVariant === "hover" ? 36 : 10,
+        backgroundColor: "#ffffff",
+        borderRadius: "50%",
       }}
-      transition={{ type: "spring", stiffness: 500, damping: 30 }}
-    />
+      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+    >
+      {cursorText && (
+        <motion.span
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-black text-[9px] text-center px-1 font-bold select-none"
+        >
+          {cursorText}
+        </motion.span>
+      )}
+    </motion.div>
   );
 }
-
