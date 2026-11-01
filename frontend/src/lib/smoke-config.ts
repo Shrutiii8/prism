@@ -34,13 +34,13 @@ export const SMOKE_CONFIG: SmokeConfig = {
   simResolution: 128,
   dyeResolution: 768,
   pressureIterations: 18,
-  velocityDissipation: 0.96,
-  dyeDissipation: 0.968, // slightly faster dissipation so smoke clears gracefully in ~1.5s
+  velocityDissipation: 0.97,
+  dyeDissipation: 0.985,
   curl: 22,
-  splatRadius: 0.0022,
-  splatForce: 5200,
-  maxOpacity: 0.38,
-  spectrumTint: 0.45, // Richer rainbow / spectrum tint
+  splatRadius: 0.0025,
+  splatForce: 5500,
+  maxOpacity: 0.45,
+  spectrumTint: 0.22,
   idlePauseThreshold: 0.002,
   intensityByRoute: {
     home: 1.0,
@@ -48,10 +48,9 @@ export const SMOKE_CONFIG: SmokeConfig = {
     app: 0.3,
   },
   dark: {
-    // Darker greyish smoke base with cool charcoal/slate undertones (avoids blinding white)
-    dyeBase: [0.22, 0.24, 0.28],
-    opacityMult: 0.85,
-    bloomGain: 0.75,
+    dyeBase: [0.94, 0.96, 0.98], // Soft silver/white mist
+    opacityMult: 1.0,
+    bloomGain: 1.1,
   },
   light: {
     inkBase: [0.08, 0.1, 0.14], // Deep navy ink mist
