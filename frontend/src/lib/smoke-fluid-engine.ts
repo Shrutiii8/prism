@@ -455,13 +455,13 @@ export class SmokeFluidEngine {
         float alpha = clamp(maxVal * uOpacity, 0.0, 0.38);
 
         if (uIsDark > 0.5) {
-          // Soft rainbow hue trail: gentle intensity, delicate luminous mist
-          vec3 rainbowMist = dye * 0.60;
+          // Muted rainbow hue in dark mode: delicate luminous shimmer
+          vec3 rainbowMist = dye * 0.55;
           gl_FragColor = vec4(rainbowMist, alpha);
         } else {
-          // Ink mist on warm paper canvas
-          vec3 ink = mix(vec3(0.06, 0.08, 0.12), dye * 0.75, 0.3);
-          gl_FragColor = vec4(ink, alpha * 0.55);
+          // More visible chromatic ink mist on light paper canvas
+          vec3 ink = mix(vec3(0.12, 0.15, 0.22), dye, 0.60);
+          gl_FragColor = vec4(ink, clamp(alpha * 1.5, 0.0, 0.55));
         }
       }
     `;
@@ -655,19 +655,22 @@ export class SmokeFluidEngine {
     const tintB = c1[2] + (c2[2] - c1[2]) * frac;
 
     if (this.isDark) {
-      // Slightly rainbow hue: vibrant spectral color with soft gentle luminescence (never chalk white)
+      // A bit lesser rainbow hue in dark mode: soft silver mist base with a subtle spectral shimmer
+      const base = this.config.dark.dyeBase;
+      const tintAmount = 0.35; // restrained rainbow hue
       return [
-        tintR * 0.72 + 0.12,
-        tintG * 0.72 + 0.12,
-        tintB * 0.72 + 0.12,
+        base[0] * (1.0 - tintAmount) + tintR * tintAmount,
+        base[1] * (1.0 - tintAmount) + tintG * tintAmount,
+        base[2] * (1.0 - tintAmount) + tintB * tintAmount,
       ];
     } else {
+      // More visible chromatic ink in light mode
       const base = this.config.light.inkBase;
-      const tintAmount = 0.35;
+      const tintAmount = 0.60;
       return [
-        base[0] * (1 - tintAmount) + tintR * tintAmount,
-        base[1] * (1 - tintAmount) + tintG * tintAmount,
-        base[2] * (1 - tintAmount) + tintB * tintAmount,
+        base[0] * (1.0 - tintAmount) + tintR * tintAmount,
+        base[1] * (1.0 - tintAmount) + tintG * tintAmount,
+        base[2] * (1.0 - tintAmount) + tintB * tintAmount,
       ];
     }
   }

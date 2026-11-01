@@ -35,12 +35,12 @@ export const SMOKE_CONFIG: SmokeConfig = {
   dyeResolution: 768,
   pressureIterations: 18,
   velocityDissipation: 0.96,
-  dyeDissipation: 0.962, // Faster graceful decay (~1.2s) so smoke does not accumulate
+  dyeDissipation: 0.965, // Graceful decay (~1.2s)
   curl: 20,
-  splatRadius: 0.0018, // Delicate, elegant wisp instead of a dense cloud
-  splatForce: 3400, // Reduced force for subtle motion
-  maxOpacity: 0.24, // Reduced intensity: soft, translucent and non-intrusive
-  spectrumTint: 0.75, // Rich rainbow hue
+  splatRadius: 0.0019, // Delicate, elegant wisp
+  splatForce: 3600,
+  maxOpacity: 0.25,
+  spectrumTint: 0.55,
   idlePauseThreshold: 0.002,
   intensityByRoute: {
     home: 1.0,
@@ -48,13 +48,13 @@ export const SMOKE_CONFIG: SmokeConfig = {
     app: 0.3,
   },
   dark: {
-    dyeBase: [0.35, 0.38, 0.45], // Soft iridescent slate (never chalk white)
-    opacityMult: 0.70, // Reduced intensity
+    dyeBase: [0.55, 0.58, 0.65], // Soft silver mist with a bit lesser rainbow shimmer
+    opacityMult: 0.65, // Restrained, subtle intensity in dark mode
     bloomGain: 0.75,
   },
   light: {
-    inkBase: [0.08, 0.1, 0.14], // Deep navy ink mist
-    opacityMult: 0.50, // Soft translucent ink on paper
-    bloomGain: 0.80,
+    inkBase: [0.12, 0.15, 0.22], // Deep slate-ink mist
+    opacityMult: 1.35, // Boosted visibility for light mode on warm paper canvas
+    bloomGain: 0.90,
   },
 };
