@@ -5,7 +5,8 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import PrismMark from "./PrismMark";
 import { LANDING_CONTENT } from "@/lib/landing-content";
-import { ArrowUpRight, Search, ChevronDown } from "lucide-react";
+import { ArrowUpRight, Search, ChevronDown, Download } from "lucide-react";
+import InstallAppModal from "./InstallAppModal";
 
 interface HeroSectionProps {
   onRequestDemo?: () => void;
@@ -15,6 +16,34 @@ export default function HeroSection({ onRequestDemo }: HeroSectionProps) {
   const { hero, liveStats } = LANDING_CONTENT;
   const [istTime, setIstTime] = useState("");
   const [overlapCount, setOverlapCount] = useState(342);
+  const [isInstallModalOpen, setIsInstallModalOpen] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
+  // Capture PWA install prompt event
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    return () => window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+  }, []);
+
+  const handleDownloadClick = () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choice: any) => {
+        if (choice.outcome === "accepted") {
+          setDeferredPrompt(null);
+        } else {
+          setIsInstallModalOpen(true);
+        }
+      });
+    } else {
+      setIsInstallModalOpen(true);
+    }
+  };
 
   // Live IST Clock
   useEffect(() => {
@@ -136,6 +165,17 @@ export default function HeroSection({ onRequestDemo }: HeroSectionProps) {
               <Search className="w-3.5 h-3.5 text-canvas-muted" />
               <span>{hero.ctaSecondary}</span>
             </a>
+
+            {/* Download Web App Action Button */}
+            <button
+              onClick={handleDownloadClick}
+              className="group inline-flex items-center gap-2 px-4 sm:px-5 py-3 sm:py-3.5 rounded-md border border-hairline hover:border-saffron/60 bg-canvas-card text-canvas-text font-mono text-xs font-bold uppercase tracking-wider hover:bg-canvas-subtle transition-all shadow-xs"
+              data-cursor="DOWNLOAD"
+            >
+              <Download className="w-3.5 h-3.5 text-saffron group-hover:translate-y-0.5 transition-transform" />
+              <span>Download Web App</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse ml-0.5" />
+            </button>
           </motion.div>
         </div>
 
@@ -204,6 +244,14 @@ export default function HeroSection({ onRequestDemo }: HeroSectionProps) {
           </a>
         </div>
       </div>
+
+      {/* Install Web App Dialog */}
+      <InstallAppModal
+        isOpen={isInstallModalOpen}
+        onClose={() => setIsInstallModalOpen(false)}
+        deferredPrompt={deferredPrompt}
+        onInstallPromptSuccess={() => setDeferredPrompt(null)}
+      />
     </section>
   );
 }

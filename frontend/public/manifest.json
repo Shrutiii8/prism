@@ -1,0 +1,20 @@
+{
+  "name": "PRISM — AICTE Integrated Complaint Monitoring Platform",
+  "short_name": "PRISM",
+  "description": "AICTE Centralized Regulatory Oversight Intelligence Platform unifying complaints across Regulation Bureau, PGRC, Approval Bureau, and Regional Offices into one institution record.",
+  "start_url": "/",
+  "id": "/",
+  "display": "standalone",
+  "background_color": "#08090B",
+  "theme_color": "#08090B",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/prism-logo.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["government", "productivity", "utilities"]
+}
