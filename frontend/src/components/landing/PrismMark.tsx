@@ -259,7 +259,8 @@ export default function PrismMark({
           alt="PRISM Official Logo Mark"
           width={size}
           height={size}
-          className={`object-contain max-w-[75vw] sm:max-w-none h-auto filter ${
+          style={{ width: "auto", height: "auto" }}
+          className={`object-contain max-w-[75vw] sm:max-w-none filter ${
             isDark
               ? "drop-shadow-[0_15px_35px_rgba(0,0,0,0.85)] brightness-105 contrast-110"
               : "drop-shadow-[0_12px_28px_rgba(11,13,18,0.18)] brightness-100 contrast-105"

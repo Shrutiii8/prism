@@ -72,10 +72,15 @@ async function apiRequest<T = any>(endpoint: string, options: RequestInit = {}):
   if (!res.ok) {
     let errorDetail = "API request failed";
     try {
-      const errJson = await res.json();
-      errorDetail = errJson.message || errJson.detail || JSON.stringify(errJson);
-    } catch {
-      errorDetail = await res.text();
+      const rawText = await res.text();
+      try {
+        const errJson = JSON.parse(rawText);
+        errorDetail = errJson.detail || errJson.message || JSON.stringify(errJson);
+      } catch {
+        errorDetail = rawText || `Server error (${res.status})`;
+      }
+    } catch (e: any) {
+      errorDetail = e.message || `Request failed with status ${res.status}`;
     }
     throw new Error(errorDetail);
   }
