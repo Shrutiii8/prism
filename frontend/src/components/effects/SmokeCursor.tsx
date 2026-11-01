@@ -86,9 +86,9 @@ export default function SmokeCursor({ className = "" }: SmokeCursorProps) {
   return (
     <canvas
       ref={canvasRef}
-      className={`fixed inset-0 w-full h-full pointer-events-none z-20 select-none ${className}`}
+      className={`fixed inset-0 w-full h-full pointer-events-none z-[2] select-none ${className}`}
       style={{
-        // Additive in dark mode, normal/multiply in light mode
+        // Screen blend in dark mode, multiply in light mode
         mixBlendMode: isDark ? "screen" : "multiply",
       }}
     />
