@@ -84,13 +84,15 @@ export class SmokeFluidEngine {
   };
 
   // Spectrum Stops for Light-Refracted Smoke
+  // Pure Saturated Spectral Rainbow Stops (NO pastel, NO white, NO grey)
   private spectrumStops: [number, number, number][] = [
-    [0.486, 0.227, 0.929], // violet (#7c3aed)
-    [0.145, 0.388, 0.922], // blue (#2563eb)
-    [0.024, 0.714, 0.831], // cyan (#06b6d4)
-    [0.063, 0.725, 0.506], // green (#10b981)
-    [0.961, 0.620, 0.043], // amber (#f59e0b)
-    [0.976, 0.451, 0.086], // saffron (#f97316)
+    [0.92, 0.12, 0.18], // red
+    [0.95, 0.45, 0.05], // orange
+    [0.92, 0.72, 0.02], // amber gold
+    [0.08, 0.88, 0.28], // emerald green
+    [0.00, 0.82, 0.88], // cyan
+    [0.15, 0.35, 0.95], // blue
+    [0.68, 0.12, 0.90], // violet
   ];
   private colorPhase = 0;
 
@@ -177,6 +179,7 @@ export class SmokeFluidEngine {
   private initContext() {
     const params = {
       alpha: true,
+      premultipliedAlpha: true,
       depth: false,
       stencil: false,
       antialias: false,
@@ -302,8 +305,8 @@ export class SmokeFluidEngine {
         p.x *= uAspectRatio;
         vec3 splat = exp(-dot(p, p) / max(1e-5, uRadius)) * uColor;
         vec3 base = texture2D(uTarget, vUv).xyz;
-        // Softly clamp to avoid runaway blinding accumulation
-        gl_FragColor = vec4(clamp(base + splat, 0.0, 1.2), 1.0);
+        // Strictly clamp accumulation to 0.35 max so overlapping splats cannot saturate or brighten into white
+        gl_FragColor = vec4(clamp(base + splat, 0.0, 0.35), 1.0);
       }
     `;
 
@@ -428,7 +431,7 @@ export class SmokeFluidEngine {
       }
     `;
 
-    // Display Pass with anti-banding dithering and adaptive dark/light blending
+    // Display Pass with anti-banding dithering and pure chromatic rainbow isolation (STRICTLY NO WHITE)
     const displayFrag = `
       precision highp float;
       uniform sampler2D uDye;
@@ -437,7 +440,7 @@ export class SmokeFluidEngine {
       varying vec2 vUv;
 
       float dither(vec2 uv) {
-        return fract(sin(dot(uv, vec2(12.9898, 78.233))) * 43758.5453) * 0.008;
+        return fract(sin(dot(uv, vec2(12.9898, 78.233))) * 43758.5453) * 0.004;
       }
 
       void main() {
@@ -446,22 +449,37 @@ export class SmokeFluidEngine {
         dye += d;
 
         float maxVal = max(dye.r, max(dye.g, dye.b));
-        if (maxVal < 0.001) {
+        if (maxVal < 0.002) {
           gl_FragColor = vec4(0.0);
           return;
         }
 
-        // Reduced max alpha intensity (subtle translucent wisp)
-        float alpha = clamp(maxVal * uOpacity, 0.0, 0.38);
+        // Pure chromatic extraction:
+        // Any common brightness across all 3 channels min(r, g, b) forms white/grey.
+        // Subtracting minVal guarantees pure saturated hue with strictly ZERO white.
+        float minVal = min(dye.r, min(dye.g, dye.b));
+        vec3 chromatic = max(vec3(0.0), dye - vec3(minVal));
 
+        float chromMax = max(chromatic.r, max(chromatic.g, chromatic.b));
+        if (chromMax < 0.002) {
+          gl_FragColor = vec4(0.0);
+          return;
+        }
+
+        // Pure saturated rainbow hue direction
+        vec3 pureHue = chromatic / chromMax;
+
+        // Very low intensity in both light and dark mode (delicate wisp, strictly no white)
         if (uIsDark > 0.5) {
-          // Muted rainbow hue in dark mode: delicate luminous shimmer
-          vec3 rainbowMist = dye * 0.55;
-          gl_FragColor = vec4(rainbowMist, alpha);
+          // Dark mode: very gentle, translucent rainbow wisp (subtle pure color, max alpha ~0.14)
+          float alpha = clamp(chromMax * uOpacity * 0.50, 0.0, 0.14);
+          vec3 col = pureHue * 0.55;
+          gl_FragColor = vec4(col * alpha, alpha);
         } else {
-          // More visible chromatic ink mist on light paper canvas
-          vec3 ink = mix(vec3(0.12, 0.15, 0.22), dye, 0.60);
-          gl_FragColor = vec4(ink, clamp(alpha * 1.5, 0.0, 0.55));
+          // Light mode: very gentle chromatic watercolor tint, strictly no white (max alpha ~0.15)
+          float alpha = clamp(chromMax * uOpacity * 0.55, 0.0, 0.15);
+          vec3 col = pureHue * 0.50;
+          gl_FragColor = vec4(col * alpha, alpha);
         }
       }
     `;
@@ -654,25 +672,9 @@ export class SmokeFluidEngine {
     const tintG = c1[1] + (c2[1] - c1[1]) * frac;
     const tintB = c1[2] + (c2[2] - c1[2]) * frac;
 
-    if (this.isDark) {
-      // A bit lesser rainbow hue in dark mode: soft silver mist base with a subtle spectral shimmer
-      const base = this.config.dark.dyeBase;
-      const tintAmount = 0.35; // restrained rainbow hue
-      return [
-        base[0] * (1.0 - tintAmount) + tintR * tintAmount,
-        base[1] * (1.0 - tintAmount) + tintG * tintAmount,
-        base[2] * (1.0 - tintAmount) + tintB * tintAmount,
-      ];
-    } else {
-      // More visible chromatic ink in light mode
-      const base = this.config.light.inkBase;
-      const tintAmount = 0.60;
-      return [
-        base[0] * (1.0 - tintAmount) + tintR * tintAmount,
-        base[1] * (1.0 - tintAmount) + tintG * tintAmount,
-        base[2] * (1.0 - tintAmount) + tintB * tintAmount,
-      ];
-    }
+    // Pure rainbow hue with reduced density — STRICTLY NO WHITE/SILVER
+    const factor = this.isDark ? 0.26 : 0.30;
+    return [tintR * factor, tintG * factor, tintB * factor];
   }
 
   private splat(x: number, y: number, dx: number, dy: number, color: [number, number, number]) {
@@ -834,9 +836,9 @@ export class SmokeFluidEngine {
         y: py,
         vx: this.pointer.deltaX * 350,
         vy: -this.pointer.deltaY * 350,
-        radius: 18 + this.pointer.speed * 200,
-        alpha: 0.35 * this.routeIntensity * this.suppressionGain * this.userSettingMultiplier,
-        decay: 0.016,
+        radius: 14 + this.pointer.speed * 160,
+        alpha: 0.12 * this.routeIntensity * this.suppressionGain * this.userSettingMultiplier,
+        decay: 0.024,
         color: colorStr,
       });
 

@@ -89,7 +89,7 @@ export default function SmokeCursor({ className = "" }: SmokeCursorProps) {
       className={`fixed inset-0 w-full h-full pointer-events-none z-20 select-none ${className}`}
       style={{
         // Additive in dark mode, normal/multiply in light mode
-        mixBlendMode: isDark ? "screen" : "multiply",
+        mixBlendMode: isDark ? "screen" : "normal",
       }}
     />
   );

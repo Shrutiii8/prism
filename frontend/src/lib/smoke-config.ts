@@ -11,7 +11,7 @@ export interface SmokeConfig {
   splatRadius: number;
   splatForce: number;
   maxOpacity: number;
-  spectrumTint: number; // 0 = pure white/ink smoke, 1 = full spectrum
+  spectrumTint: number; // 0 = monochrome, 1 = full pure spectrum
   idlePauseThreshold: number;
   intensityByRoute: {
     home: number;
@@ -34,13 +34,13 @@ export const SMOKE_CONFIG: SmokeConfig = {
   simResolution: 128,
   dyeResolution: 768,
   pressureIterations: 18,
-  velocityDissipation: 0.96,
-  dyeDissipation: 0.965, // Graceful decay (~1.2s)
-  curl: 20,
-  splatRadius: 0.0019, // Delicate, elegant wisp
-  splatForce: 3600,
-  maxOpacity: 0.25,
-  spectrumTint: 0.55,
+  velocityDissipation: 0.95,
+  dyeDissipation: 0.940, // Swift graceful decay (~0.75s) preventing dense cloud buildup
+  curl: 18,
+  splatRadius: 0.0013, // Delicate, elegant fine wisp
+  splatForce: 2400,
+  maxOpacity: 0.16, // Very low intensity
+  spectrumTint: 1.0, // Full pure chromatic rainbow
   idlePauseThreshold: 0.002,
   intensityByRoute: {
     home: 1.0,
@@ -48,13 +48,13 @@ export const SMOKE_CONFIG: SmokeConfig = {
     app: 0.3,
   },
   dark: {
-    dyeBase: [0.55, 0.58, 0.65], // Soft silver mist with a bit lesser rainbow shimmer
-    opacityMult: 0.65, // Restrained, subtle intensity in dark mode
-    bloomGain: 0.75,
+    dyeBase: [0.0, 0.0, 0.0], // Strictly ZERO white/silver base
+    opacityMult: 0.55, // Subtle, restrained intensity in dark mode
+    bloomGain: 0.50,
   },
   light: {
-    inkBase: [0.12, 0.15, 0.22], // Deep slate-ink mist
-    opacityMult: 1.35, // Boosted visibility for light mode on warm paper canvas
-    bloomGain: 0.90,
+    inkBase: [0.0, 0.0, 0.0], // Strictly ZERO white/grey base
+    opacityMult: 0.65, // Subtle, restrained intensity in light mode
+    bloomGain: 0.50,
   },
 };
