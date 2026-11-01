@@ -152,20 +152,15 @@ export default function AppLayout({ children }: AppLayoutProps) {
       {/* Floating Horizontal Navbar matching the reference design */}
       <header className="sticky top-[2px] z-40 w-full py-3 px-4 sm:px-6 lg:px-8 bg-canvas/80 backdrop-blur-md border-b border-hairline/60">
         <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-3">
-          {/* Left Island: Brand Pill (matching [shield ASTRA 26]) */}
+          {/* Left Island: Brand Pill */}
           <Link
             href="/dashboard"
             className="flex items-center gap-2.5 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full border border-hairline bg-canvas-card text-canvas-text shadow-xs hover:border-hairline-strong transition-all shrink-0 select-none group"
           >
-            <div className="w-6 h-6 rounded-full bg-black dark:bg-white text-white dark:text-black flex items-center justify-center p-1 shadow-xs group-hover:scale-105 transition-transform">
-              <Shield className="w-3.5 h-3.5" />
-            </div>
-            <div className="flex items-center gap-1 font-mono">
-              <span className="font-black text-sm tracking-wide text-canvas-text group-hover:text-saffron transition-colors">
-                PRISM
-              </span>
-              <span className="text-[11px] font-bold text-canvas-muted">26</span>
-            </div>
+            <PrismMark size={24} variant="nav" />
+            <span className="font-mono font-black text-sm tracking-wider text-canvas-text group-hover:text-saffron transition-colors">
+              PRISM
+            </span>
           </Link>
 
           {/* Center Island: Module Capsule Navigation */}
@@ -333,8 +328,8 @@ export default function AppLayout({ children }: AppLayoutProps) {
               {/* Drawer Header */}
               <div className="flex items-center justify-between pb-5 border-b border-hairline">
                 <div className="flex items-center gap-2 font-mono">
-                  <Shield className="w-4 h-4 text-saffron" />
-                  <span className="font-bold text-sm">PRISM 26</span>
+                  <PrismMark size={20} variant="nav" />
+                  <span className="font-bold text-sm">PRISM</span>
                 </div>
                 <button
                   onClick={() => setMobileMenuOpen(false)}
