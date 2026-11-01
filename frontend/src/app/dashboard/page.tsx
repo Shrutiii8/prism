@@ -169,7 +169,7 @@ export default function DashboardPage() {
         )}
 
         {/* PRIMARY KPI METRICS GRID */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
           {/* Total Institutions */}
           <Link href="/institutions">
             <TiltCard className="h-full group">
@@ -298,7 +298,7 @@ export default function DashboardPage() {
         </div>
 
         {/* SECONDARY OPERATIONAL METRICS READOUT */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
           <Link
             href="/ai-matching"
             className="rounded-xl border border-hairline bg-canvas-card p-4 flex items-center justify-between hover:bg-canvas-card-hover hover:border-hairline-strong transition-all group shadow-soft"
@@ -361,16 +361,16 @@ export default function DashboardPage() {
         </div>
 
         {/* 8 INTERACTIVE CHARTS GRID */}
-        <div key={tokens.resolvedTheme} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div key={tokens.resolvedTheme} className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           {/* Chart 1: Complaints Received Over Time */}
-          <div className="rounded-2xl border border-hairline bg-canvas-card backdrop-blur-md p-6 shadow-soft">
-            <div className="flex items-center justify-between mb-6">
+          <div className="rounded-2xl border border-hairline bg-canvas-card backdrop-blur-md p-4 sm:p-6 shadow-soft">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
               <span className="text-xs font-mono uppercase tracking-wider text-canvas-muted">
                 1. Complaints Inflow Telemetry (Time-Series)
               </span>
               <span className="text-[10px] font-mono text-canvas-faint">DAILY RATE</span>
             </div>
-            <div className="h-64">
+            <div className="h-64 sm:h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={data?.complaints_over_time || []}>
                   <defs>
@@ -380,8 +380,8 @@ export default function DashboardPage() {
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={tokens.chartGrid} />
-                  <XAxis dataKey="name" stroke={tokens.muted} fontSize={11} tickLine={false} fontStretch="semi-condensed" />
-                  <YAxis stroke={tokens.muted} fontSize={11} tickLine={false} />
+                  <XAxis dataKey="name" stroke={tokens.muted} fontSize={10} tickLine={false} fontStretch="semi-condensed" />
+                  <YAxis stroke={tokens.muted} fontSize={10} tickLine={false} width={30} />
                   <Tooltip
                     contentStyle={{
                       backgroundColor: tokens.chartTooltipBg,
@@ -409,19 +409,19 @@ export default function DashboardPage() {
           </div>
 
           {/* Chart 2: Complaints by Bureau */}
-          <div className="rounded-2xl border border-hairline bg-canvas-card backdrop-blur-md p-6 shadow-soft">
-            <div className="flex items-center justify-between mb-6">
+          <div className="rounded-2xl border border-hairline bg-canvas-card backdrop-blur-md p-4 sm:p-6 shadow-soft">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
               <span className="text-xs font-mono uppercase tracking-wider text-canvas-muted">
                 2. Complaint Load by Bureau
               </span>
               <span className="text-[10px] font-mono text-canvas-faint">VOLUME</span>
             </div>
-            <div className="h-64">
+            <div className="h-64 sm:h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={data?.complaints_by_bureau || []}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={tokens.chartGrid} />
-                  <XAxis dataKey="name" stroke={tokens.muted} fontSize={11} tickLine={false} />
-                  <YAxis stroke={tokens.muted} fontSize={11} tickLine={false} />
+                  <XAxis dataKey="name" stroke={tokens.muted} fontSize={10} tickLine={false} />
+                  <YAxis stroke={tokens.muted} fontSize={10} tickLine={false} width={30} />
                   <Tooltip
                     contentStyle={{
                       backgroundColor: tokens.chartTooltipBg,
@@ -441,24 +441,24 @@ export default function DashboardPage() {
           </div>
 
           {/* Chart 3: Complaints by Current Workflow Status */}
-          <div className="rounded-2xl border border-hairline bg-canvas-card backdrop-blur-md p-6 shadow-soft">
-            <div className="flex items-center justify-between mb-6">
+          <div className="rounded-2xl border border-hairline bg-canvas-card backdrop-blur-md p-4 sm:p-6 shadow-soft">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
               <span className="text-xs font-mono uppercase tracking-wider text-canvas-muted">
                 3. Complaints by Workflow Pipeline Stage
               </span>
               <span className="text-[10px] font-mono text-canvas-faint">STAGES</span>
             </div>
-            <div className="h-64">
+            <div className="h-64 sm:h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={data?.complaints_by_status || []} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke={tokens.chartGrid} />
-                  <XAxis type="number" stroke={tokens.muted} fontSize={11} tickLine={false} />
+                  <XAxis type="number" stroke={tokens.muted} fontSize={10} tickLine={false} />
                   <YAxis
                     type="category"
                     dataKey="name"
                     stroke={tokens.muted}
                     fontSize={10}
-                    width={130}
+                    width={100}
                     tickLine={false}
                   />
                   <Tooltip
@@ -480,14 +480,14 @@ export default function DashboardPage() {
           </div>
 
           {/* Chart 4: Top Institutions by Complaint Volume */}
-          <div className="rounded-2xl border border-hairline bg-canvas-card backdrop-blur-md p-6 shadow-soft">
-            <div className="flex items-center justify-between mb-6">
+          <div className="rounded-2xl border border-hairline bg-canvas-card backdrop-blur-md p-4 sm:p-6 shadow-soft">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
               <span className="text-xs font-mono uppercase tracking-wider text-canvas-muted">
                 4. Highest Volume Institutions
               </span>
               <span className="text-[10px] font-mono text-canvas-faint">CONCENTRATION</span>
             </div>
-            <div className="h-64">
+            <div className="h-64 sm:h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={data?.institution_distribution || []}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={tokens.chartGrid} />
@@ -501,7 +501,7 @@ export default function DashboardPage() {
                     tickLine={false}
                     height={50}
                   />
-                  <YAxis stroke={tokens.muted} fontSize={11} tickLine={false} />
+                  <YAxis stroke={tokens.muted} fontSize={10} tickLine={false} width={30} />
                   <Tooltip
                     contentStyle={{
                       backgroundColor: tokens.chartTooltipBg,
@@ -521,14 +521,14 @@ export default function DashboardPage() {
           </div>
 
           {/* Chart 5: Severity Distribution */}
-          <div className="rounded-2xl border border-hairline bg-canvas-card backdrop-blur-md p-6 shadow-soft">
+          <div className="rounded-2xl border border-hairline bg-canvas-card backdrop-blur-md p-4 sm:p-6 shadow-soft">
             <div className="flex items-center justify-between mb-4">
               <span className="text-xs font-mono uppercase tracking-wider text-canvas-muted">
                 5. Case Severity Classification
               </span>
               <span className="text-[10px] font-mono text-canvas-faint">TIERS</span>
             </div>
-            <div className="h-64 flex items-center justify-center relative">
+            <div className="h-64 sm:h-72 flex items-center justify-center relative">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
@@ -537,8 +537,8 @@ export default function DashboardPage() {
                     nameKey="name"
                     cx="50%"
                     cy="50%"
-                    innerRadius={50}
-                    outerRadius={75}
+                    innerRadius={45}
+                    outerRadius={68}
                     paddingAngle={4}
                     label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
                     labelLine={false}
@@ -569,19 +569,19 @@ export default function DashboardPage() {
           </div>
 
           {/* Chart 6: Monthly Resolution Trends */}
-          <div className="rounded-2xl border border-hairline bg-canvas-card backdrop-blur-md p-6 shadow-soft">
-            <div className="flex items-center justify-between mb-6">
+          <div className="rounded-2xl border border-hairline bg-canvas-card backdrop-blur-md p-4 sm:p-6 shadow-soft">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
               <span className="text-xs font-mono uppercase tracking-wider text-canvas-muted">
                 6. Resolution Velocity Trends
               </span>
               <span className="text-[10px] font-mono text-canvas-faint">DISPOSAL</span>
             </div>
-            <div className="h-64">
+            <div className="h-64 sm:h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={data?.monthly_resolution_trends || []}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={tokens.chartGrid} />
-                  <XAxis dataKey="name" stroke={tokens.muted} fontSize={11} tickLine={false} />
-                  <YAxis stroke={tokens.muted} fontSize={11} tickLine={false} />
+                  <XAxis dataKey="name" stroke={tokens.muted} fontSize={10} tickLine={false} />
+                  <YAxis stroke={tokens.muted} fontSize={10} tickLine={false} width={30} />
                   <Tooltip
                     contentStyle={{
                       backgroundColor: tokens.chartTooltipBg,
@@ -601,19 +601,19 @@ export default function DashboardPage() {
           </div>
 
           {/* Chart 7: Overdue Cases by Bureau */}
-          <div className="rounded-2xl border border-hairline bg-canvas-card backdrop-blur-md p-6 shadow-soft">
-            <div className="flex items-center justify-between mb-6">
+          <div className="rounded-2xl border border-hairline bg-canvas-card backdrop-blur-md p-4 sm:p-6 shadow-soft">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
               <span className="text-xs font-mono uppercase tracking-wider text-rose-500">
                 7. Statutory SLA Overdue Breaches
               </span>
               <span className="text-[10px] font-mono text-rose-500">CRITICAL</span>
             </div>
-            <div className="h-64">
+            <div className="h-64 sm:h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={data?.overdue_by_bureau || []}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={tokens.chartGrid} />
-                  <XAxis dataKey="name" stroke={tokens.muted} fontSize={11} tickLine={false} />
-                  <YAxis stroke={tokens.muted} fontSize={11} tickLine={false} />
+                  <XAxis dataKey="name" stroke={tokens.muted} fontSize={10} tickLine={false} />
+                  <YAxis stroke={tokens.muted} fontSize={10} tickLine={false} width={30} />
                   <Tooltip
                     contentStyle={{
                       backgroundColor: tokens.chartTooltipBg,
@@ -633,24 +633,24 @@ export default function DashboardPage() {
           </div>
 
           {/* Chart 8: Officer Workload Distribution */}
-          <div className="rounded-2xl border border-hairline bg-canvas-card backdrop-blur-md p-6 shadow-soft">
-            <div className="flex items-center justify-between mb-6">
+          <div className="rounded-2xl border border-hairline bg-canvas-card backdrop-blur-md p-4 sm:p-6 shadow-soft">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
               <span className="text-xs font-mono uppercase tracking-wider text-canvas-muted">
                 8. Active Officer Workload Allocation
               </span>
               <span className="text-[10px] font-mono text-canvas-faint">EQUITY</span>
             </div>
-            <div className="h-64">
+            <div className="h-64 sm:h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={data?.workload_distribution || []} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke={tokens.chartGrid} />
-                  <XAxis type="number" stroke={tokens.muted} fontSize={11} tickLine={false} />
+                  <XAxis type="number" stroke={tokens.muted} fontSize={10} tickLine={false} />
                   <YAxis
                     type="category"
                     dataKey="name"
                     stroke={tokens.muted}
                     fontSize={10}
-                    width={130}
+                    width={100}
                     tickLine={false}
                   />
                   <Tooltip

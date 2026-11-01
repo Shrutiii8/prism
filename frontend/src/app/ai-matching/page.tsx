@@ -109,7 +109,7 @@ export default function AIMatchingWorkspacePage() {
 
         {/* Filter and Toggles */}
         <div className="rounded-2xl border border-hairline bg-canvas-card p-4 flex flex-wrap items-center justify-between gap-4 text-xs font-mono shadow-soft">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="text-canvas-muted uppercase">CONFIDENCE TIER:</span>
             {["", "HIGH", "MEDIUM", "LOW"].map((cls) => (
               <button
@@ -126,7 +126,7 @@ export default function AIMatchingWorkspacePage() {
             ))}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="text-canvas-muted uppercase">REVIEW AUDIT:</span>
             {["UNREVIEWED", "CONFIRMED", "REJECTED"].map((st) => (
               <button

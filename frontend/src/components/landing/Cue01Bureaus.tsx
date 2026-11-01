@@ -18,11 +18,11 @@ export default function Cue01Bureaus() {
     <section
       id="bureaus"
       onMouseMove={handleMouseMove}
-      className="relative py-28 sm:py-36 border-b border-hairline overflow-hidden"
+      className="relative py-20 sm:py-36 border-b border-hairline overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 sm:mb-16">
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <span className="font-mono text-xs font-bold text-spectrum uppercase tracking-[0.2em]">
@@ -33,7 +33,7 @@ export default function Cue01Bureaus() {
                 INTER-BUREAU COUPLING
               </span>
             </div>
-            <h2 className="text-4xl sm:text-6xl font-bold tracking-tight text-canvas-text">
+            <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-canvas-text">
               {cue01.title}
             </h2>
           </div>
@@ -85,7 +85,7 @@ export default function Cue01Bureaus() {
                   </p>
 
                   {/* Right: Tag chips + Arrow */}
-                  <div className="flex items-center justify-between lg:justify-end gap-6">
+                  <div className="flex flex-wrap sm:flex-nowrap items-center justify-between lg:justify-end gap-3 sm:gap-6">
                     <div className="flex flex-wrap gap-1.5">
                       {bureau.tags.map((tag) => (
                         <span

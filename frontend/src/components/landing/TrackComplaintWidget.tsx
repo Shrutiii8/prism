@@ -59,14 +59,14 @@ export default function TrackComplaintWidget() {
   };
 
   return (
-    <section id="track" className="relative py-28 sm:py-36 border-b border-hairline overflow-hidden">
-      <div className="max-w-5xl mx-auto px-6">
+    <section id="track" className="relative py-20 sm:py-36 border-b border-hairline overflow-hidden">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6">
         {/* Section Header */}
-        <div className="text-center space-y-3 mb-12">
+        <div className="text-center space-y-3 mb-10 sm:mb-12">
           <span className="font-mono text-xs font-bold text-spectrum uppercase tracking-[0.25em]">
             PUBLIC TRANSPARENCY
           </span>
-          <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-canvas-text">
+          <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-canvas-text">
             Track a Grievance in Real-Time
           </h2>
           <p className="text-canvas-muted text-sm max-w-lg mx-auto font-normal">
@@ -81,21 +81,23 @@ export default function TrackComplaintWidget() {
           transition={{ duration: 0.45 }}
           className="relative max-w-2xl mx-auto"
         >
-          <div className="relative flex items-center bg-canvas-card border border-hairline focus-within:border-saffron/60 rounded-xl overflow-hidden p-1.5 shadow-card transition-all">
-            <Search className="w-5 h-5 text-canvas-muted ml-3.5 shrink-0" />
-            <input
-              type="text"
-              value={caseInput}
-              onChange={(e) => {
-                setCaseInput(e.target.value);
-                if (errorMsg) setErrorMsg("");
-              }}
-              placeholder="Enter Case ID (e.g. PGRC/2026/001023 or PRISM-2026-000042)"
-              className="w-full bg-transparent text-canvas-text placeholder-canvas-muted font-mono text-xs sm:text-sm px-3 py-3 outline-none uppercase tracking-wider"
-            />
+          <div className="relative flex flex-col sm:flex-row items-stretch sm:items-center bg-canvas-card border border-hairline focus-within:border-saffron/60 rounded-xl overflow-hidden p-1.5 shadow-card transition-all gap-1 sm:gap-0">
+            <div className="flex items-center flex-1 min-w-0">
+              <Search className="w-5 h-5 text-canvas-muted ml-3 shrink-0" />
+              <input
+                type="text"
+                value={caseInput}
+                onChange={(e) => {
+                  setCaseInput(e.target.value);
+                  if (errorMsg) setErrorMsg("");
+                }}
+                placeholder="Case ID (e.g. PGRC/2026/001023)"
+                className="w-full bg-transparent text-canvas-text placeholder-canvas-muted font-mono text-xs sm:text-sm px-3 py-2.5 sm:py-3 outline-none uppercase tracking-wider min-w-0"
+              />
+            </div>
             <button
               type="submit"
-              className="px-6 py-3 rounded-lg bg-canvas-text text-canvas font-mono text-xs font-bold uppercase tracking-wider hover:opacity-90 transition-opacity shrink-0 shadow-xs"
+              className="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 rounded-lg bg-canvas-text text-canvas font-mono text-xs font-bold uppercase tracking-wider hover:opacity-90 transition-opacity shrink-0 shadow-xs text-center"
               data-cursor="SEARCH"
             >
               Track Case
@@ -175,7 +177,7 @@ export default function TrackComplaintWidget() {
                   STATUTORY RESOLUTION PIPELINE
                 </span>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
                   {trackedCase.stages.map((st: any, i: number) => {
                     return (
                       <div

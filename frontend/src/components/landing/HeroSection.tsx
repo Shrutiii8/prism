@@ -54,9 +54,9 @@ export default function HeroSection({ onRequestDemo }: HeroSectionProps) {
       </div>
 
       {/* Main Hero Container */}
-      <div className="max-w-7xl mx-auto px-6 w-full relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center my-auto">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center my-auto">
         {/* Left Column (Headline, Copy, CTAs) */}
-        <div className="lg:col-span-7 space-y-7">
+        <div className="lg:col-span-7 space-y-6 sm:space-y-7">
           {/* Eyebrow */}
           <motion.div
             initial={{ opacity: 0, y: 15 }}
@@ -65,7 +65,7 @@ export default function HeroSection({ onRequestDemo }: HeroSectionProps) {
             className="flex items-center gap-2"
           >
             <span className="w-2 h-2 rounded-full bg-saffron shadow-[0_0_8px_#f28c28]" />
-            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-canvas-muted">
+            <span className="font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-canvas-muted">
               {hero.eyebrow}
             </span>
           </motion.div>
@@ -76,7 +76,7 @@ export default function HeroSection({ onRequestDemo }: HeroSectionProps) {
               initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-              className="text-5xl sm:text-7xl xl:text-[84px] font-black tracking-tight leading-[0.92] text-canvas-text"
+              className="text-4xl xs:text-5xl sm:text-6xl lg:text-7xl xl:text-[84px] font-black tracking-tight leading-[0.95] text-canvas-text break-words"
             >
               Every complaint.
             </motion.h1>
@@ -85,7 +85,7 @@ export default function HeroSection({ onRequestDemo }: HeroSectionProps) {
               initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-              className="text-5xl sm:text-7xl xl:text-[84px] font-black tracking-tight leading-[0.92] text-canvas-text"
+              className="text-4xl xs:text-5xl sm:text-6xl lg:text-7xl xl:text-[84px] font-black tracking-tight leading-[0.95] text-canvas-text break-words"
             >
               One institution.
             </motion.h1>
@@ -94,7 +94,7 @@ export default function HeroSection({ onRequestDemo }: HeroSectionProps) {
               initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-              className="text-5xl sm:text-7xl xl:text-[84px] font-serif italic tracking-tight leading-[0.92] text-spectrum"
+              className="text-4xl xs:text-5xl sm:text-6xl lg:text-7xl xl:text-[84px] font-serif italic tracking-tight leading-[0.95] text-spectrum break-words"
             >
               {hero.accentWord}
             </motion.h1>
@@ -105,7 +105,7 @@ export default function HeroSection({ onRequestDemo }: HeroSectionProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="text-canvas-muted text-base sm:text-lg max-w-xl font-normal leading-relaxed"
+            className="text-canvas-muted text-sm sm:text-base md:text-lg max-w-xl font-normal leading-relaxed"
           >
             {hero.subheadline}
           </motion.p>
@@ -115,12 +115,12 @@ export default function HeroSection({ onRequestDemo }: HeroSectionProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-wrap items-center gap-4 pt-2"
+            className="flex flex-wrap items-center gap-3 sm:gap-4 pt-2"
           >
             {/* Primary Solid Button */}
             <Link
               href="/login"
-              className="group inline-flex items-center gap-2.5 px-6 py-3.5 rounded-md bg-canvas-text text-canvas font-mono text-xs font-bold uppercase tracking-wider hover:opacity-90 transition-all hover:scale-[1.02] shadow-soft"
+              className="group inline-flex items-center gap-2.5 px-5 sm:px-6 py-3 sm:py-3.5 rounded-md bg-canvas-text text-canvas font-mono text-xs font-bold uppercase tracking-wider hover:opacity-90 transition-all hover:scale-[1.02] shadow-soft"
               data-cursor="OPEN"
             >
               <span>{hero.ctaPrimary}</span>
@@ -130,7 +130,7 @@ export default function HeroSection({ onRequestDemo }: HeroSectionProps) {
             {/* Secondary Ghost Button */}
             <a
               href="#track"
-              className="inline-flex items-center gap-2 px-5 py-3.5 rounded-md border border-hairline bg-canvas-card text-canvas-muted font-mono text-xs uppercase tracking-wider hover:bg-canvas-subtle hover:text-canvas-text transition-all shadow-xs"
+              className="inline-flex items-center gap-2 px-4 sm:px-5 py-3 sm:py-3.5 rounded-md border border-hairline bg-canvas-card text-canvas-muted font-mono text-xs uppercase tracking-wider hover:bg-canvas-subtle hover:text-canvas-text transition-all shadow-xs"
               data-cursor="TRACK"
             >
               <Search className="w-3.5 h-3.5 text-canvas-muted" />
@@ -140,14 +140,14 @@ export default function HeroSection({ onRequestDemo }: HeroSectionProps) {
         </div>
 
         {/* Right Column: Hero Crystalline Prism Mark & Light Refraction Simulation */}
-        <div className="lg:col-span-5 flex items-center justify-center relative min-h-[380px] sm:min-h-[460px]">
-          <PrismMark size={340} variant="hero" showBeams={true} />
+        <div className="lg:col-span-5 flex items-center justify-center relative min-h-[300px] sm:min-h-[460px] max-w-full overflow-hidden">
+          <PrismMark size={320} variant="hero" showBeams={true} />
         </div>
       </div>
 
       {/* Live Show-Control Stat Strip along Bottom */}
-      <div className="max-w-7xl mx-auto px-6 w-full mt-12 relative z-10">
-        <div className="grid grid-cols-2 md:grid-cols-4 border border-hairline divide-x divide-hairline bg-canvas-card/80 backdrop-blur-md rounded-xl overflow-hidden shadow-soft">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full mt-10 sm:mt-12 relative z-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 border border-hairline divide-y sm:divide-y-0 sm:divide-x divide-hairline bg-canvas-card/80 backdrop-blur-md rounded-xl overflow-hidden shadow-soft">
           {/* Cell 1: Live Clock */}
           <div className="p-4 sm:p-5 flex flex-col justify-between">
             <span className="font-mono text-[10px] uppercase tracking-widest text-canvas-muted flex items-center gap-1.5">

@@ -9,10 +9,10 @@ export default function Cue04Personas() {
   const { cue04 } = LANDING_CONTENT;
 
   return (
-    <section id="personas" className="relative py-28 sm:py-36 border-b border-hairline overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6">
+    <section id="personas" className="relative py-20 sm:py-36 border-b border-hairline overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 sm:mb-16">
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <span className="font-mono text-xs font-bold text-spectrum uppercase tracking-[0.2em]">
@@ -23,7 +23,7 @@ export default function Cue04Personas() {
                 USER ARCHETYPES
               </span>
             </div>
-            <h2 className="text-4xl sm:text-6xl font-bold tracking-tight text-canvas-text">
+            <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-canvas-text">
               {cue04.title}
             </h2>
           </div>
@@ -33,13 +33,13 @@ export default function Cue04Personas() {
         </div>
 
         {/* 3 Large Persona Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
           {cue04.personas.map((persona) => (
             <motion.div
               key={persona.role}
               whileHover={{ y: -8 }}
               transition={{ duration: 0.3 }}
-              className="group relative bg-canvas-card dark:bg-[#0c0e15] border border-hairline hover:border-hairline-strong rounded-2xl p-7 flex flex-col justify-between overflow-hidden shadow-card"
+              className="group relative bg-canvas-card dark:bg-[#0c0e15] border border-hairline hover:border-hairline-strong rounded-2xl p-5 sm:p-7 flex flex-col justify-between overflow-hidden shadow-card"
               data-cursor="PERSONA"
             >
               {/* Subtle Spectrum Top Border on Hover */}

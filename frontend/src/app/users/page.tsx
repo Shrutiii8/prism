@@ -212,7 +212,7 @@ export default function UsersManagementPage() {
         />
 
         {/* Top 4-card Telemetry Metrics Strip */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <div className="rounded-2xl border border-hairline bg-canvas-card p-4 sm:p-5 shadow-soft">
             <div className="flex items-center justify-between text-canvas-muted mb-2 font-mono text-[10px] uppercase">
               <span>TOTAL PERSONNEL</span>

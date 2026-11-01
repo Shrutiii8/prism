@@ -77,22 +77,22 @@ export default function LandingNav({ onRequestDemo }: LandingNavProps) {
             : "bg-transparent border-b border-transparent"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 h-18 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-18 flex items-center justify-between">
           {/* Left: Logo & Wordmark */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <PrismMark variant="nav" size={28} />
+          <Link href="/" className="flex items-center gap-2 sm:gap-3 group shrink-0">
+            <PrismMark variant="nav" size={26} />
             <div className="flex flex-col">
-              <span className="font-mono text-base font-black tracking-wider text-canvas-text group-hover:text-saffron transition-colors">
+              <span className="font-mono text-sm sm:text-base font-black tracking-wider text-canvas-text group-hover:text-saffron transition-colors">
                 PRISM
               </span>
-              <span className="font-mono text-[9px] uppercase tracking-widest text-canvas-muted">
+              <span className="font-mono text-[8px] sm:text-[9px] uppercase tracking-widest text-canvas-muted">
                 AICTE
               </span>
             </div>
           </Link>
 
           {/* Desktop Links */}
-          <nav className="hidden lg:flex items-center gap-7">
+          <nav className="hidden lg:flex items-center gap-6 xl:gap-7">
             {navLinks.map((link) => (
               <a
                 key={link.label}
@@ -105,7 +105,7 @@ export default function LandingNav({ onRequestDemo }: LandingNavProps) {
           </nav>
 
           {/* Center/Right: Live Ticking Chip & CTAs */}
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-3">
             {/* Live IST clock chip */}
             <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-canvas-card border border-hairline font-mono text-[10px] text-canvas-muted shadow-xs">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
@@ -128,7 +128,7 @@ export default function LandingNav({ onRequestDemo }: LandingNavProps) {
             {/* Solid Official Login CTA */}
             <Link
               href="/login"
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-canvas-text text-canvas font-mono text-[11px] font-bold uppercase tracking-wider hover:opacity-90 transition-all hover:scale-[1.02] shadow-soft"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-md bg-canvas-text text-canvas font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-wider hover:opacity-90 transition-all hover:scale-[1.02] shadow-soft shrink-0"
               data-cursor="LOGIN"
             >
               <span>Official Login</span>
@@ -141,7 +141,7 @@ export default function LandingNav({ onRequestDemo }: LandingNavProps) {
               className="lg:hidden p-2 text-canvas-muted hover:text-canvas-text"
               aria-label="Open Navigation Menu"
             >
-              <Menu className="w-6 h-6" />
+              <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
             </button>
           </div>
         </div>

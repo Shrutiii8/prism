@@ -368,9 +368,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
           }`}
         >
           {/* Top Header Bar */}
-          <header className="h-16 bg-canvas/80 dark:bg-[#08090B]/80 backdrop-blur-md border-b border-hairline flex items-center justify-between px-4 sm:px-6 lg:px-8 sticky top-[2px] z-30 shadow-xs">
+          <header className="h-16 bg-canvas/80 dark:bg-[#08090B]/80 backdrop-blur-md border-b border-hairline flex items-center justify-between px-3 sm:px-6 lg:px-8 sticky top-[2px] z-30 shadow-xs">
             {/* Left: 3-line Hamburger Menu Toggle (Mobile + Desktop) + Search / Breadcrumbs */}
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-1.5 sm:gap-3">
               <button
                 onClick={() => {
                   if (typeof window !== "undefined" && window.innerWidth < 1024) {
@@ -379,7 +379,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
                     toggleSidebar();
                   }
                 }}
-                className="p-2 -ml-2 text-canvas-muted hover:text-canvas-text hover:bg-canvas-card rounded-lg border border-transparent hover:border-hairline transition-all shadow-xs"
+                className="p-2 -ml-1 text-canvas-muted hover:text-canvas-text hover:bg-canvas-card rounded-lg border border-transparent hover:border-hairline transition-all shadow-xs"
                 title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
                 aria-label="Toggle navigation sidebar"
               >
@@ -388,7 +388,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
               <button
                 onClick={() => setCommandPaletteOpen(true)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-hairline bg-canvas-card text-xs font-mono text-canvas-muted hover:text-canvas-text hover:border-hairline-strong transition-all group shadow-xs"
+                className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-lg border border-hairline bg-canvas-card text-xs font-mono text-canvas-muted hover:text-canvas-text hover:border-hairline-strong transition-all group shadow-xs"
               >
                 <Search className="w-3.5 h-3.5 text-saffron" />
                 <span className="hidden sm:inline">Search platform...</span>
@@ -406,7 +406,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
             </div>
 
             {/* Right: Live IST Clock + Theme Toggle + Notification Bell + Profile */}
-            <div className="flex items-center space-x-2 sm:space-x-3.5">
+            <div className="flex items-center space-x-1.5 sm:space-x-3.5">
               {/* Live IST Clock */}
               <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-full border border-hairline bg-canvas-card text-[11px] font-mono shadow-xs">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
@@ -455,7 +455,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
           </header>
 
           {/* Page Content Body */}
-          <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto max-w-full">{children}</main>
+          <main className="flex-1 p-3 sm:p-6 lg:p-8 overflow-y-auto max-w-full">{children}</main>
         </div>
       </div>
 

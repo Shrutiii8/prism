@@ -8,10 +8,10 @@ export default function Cue05Impact() {
   const { cue05 } = LANDING_CONTENT;
 
   return (
-    <section id="impact" className="relative py-28 sm:py-36 border-b border-hairline overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6">
+    <section id="impact" className="relative py-20 sm:py-36 border-b border-hairline overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 sm:mb-16">
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <span className="font-mono text-xs font-bold text-spectrum uppercase tracking-[0.2em]">
@@ -22,7 +22,7 @@ export default function Cue05Impact() {
                 SYSTEMIC TRANSFORMATION
               </span>
             </div>
-            <h2 className="text-4xl sm:text-6xl font-bold tracking-tight text-canvas-text">
+            <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-canvas-text">
               {cue05.title}
             </h2>
           </div>
@@ -52,7 +52,7 @@ export default function Cue05Impact() {
               className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-hairline hover:bg-canvas-subtle transition-colors"
             >
               {/* Left: Status Quo (Dimmed) */}
-              <div className="p-6 sm:p-7 space-y-1">
+              <div className="p-4 sm:p-7 space-y-1">
                 <span className="font-mono text-[10px] uppercase text-canvas-faint block tracking-wider font-semibold">
                   {row.aspect}
                 </span>
@@ -62,7 +62,7 @@ export default function Cue05Impact() {
               </div>
 
               {/* Right: With PRISM (Vibrant / Clean) */}
-              <div className="p-6 sm:p-7 space-y-1 bg-emerald-500/[0.03]">
+              <div className="p-4 sm:p-7 space-y-1 bg-emerald-500/[0.03]">
                 <span className="font-mono text-[10px] uppercase text-emerald-600 dark:text-emerald-400 block tracking-wider font-bold">
                   PRISM RESOLUTION
                 </span>

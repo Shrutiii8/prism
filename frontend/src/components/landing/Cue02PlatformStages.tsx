@@ -12,10 +12,10 @@ export default function Cue02PlatformStages() {
   const activeStage = cue02.stages[activeStageIndex];
 
   return (
-    <section id="platform" className="relative py-28 sm:py-36 border-b border-hairline overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6">
+    <section id="platform" className="relative py-20 sm:py-36 border-b border-hairline overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 sm:mb-16">
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <span className="font-mono text-xs font-bold text-spectrum uppercase tracking-[0.2em]">
@@ -26,7 +26,7 @@ export default function Cue02PlatformStages() {
                 ARCHITECTURE BLUEPRINT
               </span>
             </div>
-            <h2 className="text-4xl sm:text-6xl font-bold tracking-tight text-canvas-text">
+            <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-canvas-text">
               {cue02.title}
             </h2>
           </div>
@@ -125,7 +125,7 @@ export default function Cue02PlatformStages() {
                   </div>
 
                   {/* Measured Specs Row */}
-                  <div className="grid grid-cols-3 gap-3 pt-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 pt-2">
                     {activeStage.specs.map((spec) => (
                       <div key={spec.label} className="bg-canvas-subtle p-2.5 rounded border border-hairline">
                         <span className="text-[9px] uppercase tracking-wider text-canvas-faint block">
@@ -144,17 +144,17 @@ export default function Cue02PlatformStages() {
         </div>
 
         {/* Readout Measured Specs Bar Along Bottom */}
-        <div className="mt-16 grid grid-cols-2 md:grid-cols-4 border border-hairline divide-x divide-hairline bg-canvas-card rounded-xl overflow-hidden shadow-soft">
+        <div className="mt-12 sm:mt-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 border border-hairline divide-y sm:divide-y-0 sm:divide-x divide-hairline bg-canvas-card rounded-xl overflow-hidden shadow-soft">
           {cue02.readouts.map((item) => (
-            <div key={item.label} className="p-5 flex flex-col justify-between">
+            <div key={item.label} className="p-4 sm:p-5 flex flex-col justify-between">
               <span className="font-mono text-[10px] uppercase tracking-widest text-canvas-faint">
                 {item.label}
               </span>
-              <div className="mt-3">
-                <span className="font-mono text-2xl sm:text-3xl font-extrabold text-canvas-text">
+              <div className="mt-2 sm:mt-3">
+                <span className="font-mono text-xl sm:text-2xl md:text-3xl font-extrabold text-canvas-text">
                   {item.value}
                 </span>
-                <span className="font-mono text-[11px] text-canvas-muted block mt-0.5">
+                <span className="font-mono text-[10px] sm:text-[11px] text-canvas-muted block mt-0.5">
                   {item.note}
                 </span>
               </div>

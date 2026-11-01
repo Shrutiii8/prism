@@ -136,7 +136,7 @@ export default function PrismMark({
       {/* SVG Light Beam Simulation (Incoming parallel bureau streams -> Outgoing single unified beam) */}
       {showBeams && variant === "hero" && (
         <svg
-          className="absolute inset-0 w-full h-full pointer-events-none overflow-visible z-0"
+          className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden sm:overflow-visible z-0"
           viewBox="0 0 600 400"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -259,7 +259,7 @@ export default function PrismMark({
           alt="PRISM Official Logo Mark"
           width={size}
           height={size}
-          className={`object-contain filter ${
+          className={`object-contain max-w-[75vw] sm:max-w-none h-auto filter ${
             isDark
               ? "drop-shadow-[0_15px_35px_rgba(0,0,0,0.85)] brightness-105 contrast-110"
               : "drop-shadow-[0_12px_28px_rgba(11,13,18,0.18)] brightness-100 contrast-105"

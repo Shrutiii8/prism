@@ -46,7 +46,7 @@ export default function LandingFooter() {
       {/* Subtle background glow */}
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-gradient-to-t from-saffron/5 via-cyan-500/5 to-transparent blur-[120px] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
         {/* Top Header Row with Logo, Mission & Clock */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between pb-16 border-b border-hairline gap-8">
           <div className="flex items-center gap-4">
@@ -88,7 +88,7 @@ export default function LandingFooter() {
         </div>
 
         {/* 4-Column Navigation Links */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-10 py-16 border-b border-hairline">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10 py-12 sm:py-16 border-b border-hairline">
           {(footer.columns as FooterColumn[]).map((column: FooterColumn, idx: number) => (
             <div key={idx} className="flex flex-col space-y-4">
               <span className="text-xs font-mono uppercase tracking-widest text-canvas-muted flex items-center gap-1.5 font-bold">

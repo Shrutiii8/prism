@@ -15,7 +15,7 @@ export default function FinalCtaSection({ onRequestDemo }: FinalCtaSectionProps)
   const content = LANDING_CONTENT.finalCta;
 
   return (
-    <section className="relative py-32 md:py-48 px-6 lg:px-16 overflow-hidden border-t border-hairline bg-canvas">
+    <section className="relative py-20 sm:py-32 md:py-48 px-4 sm:px-6 lg:px-16 overflow-hidden border-t border-hairline bg-canvas">
       {/* Background ambient refraction glow */}
       <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
         <div className="w-[600px] h-[600px] rounded-full bg-gradient-to-tr from-saffron/10 via-cyan-500/10 to-purple-600/10 blur-[140px] opacity-70" />
@@ -62,7 +62,7 @@ export default function FinalCtaSection({ onRequestDemo }: FinalCtaSectionProps)
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.1 }}
-          className="text-4xl sm:text-6xl md:text-7xl font-light tracking-tight text-canvas-text max-w-3xl leading-[1.05] mb-6"
+          className="text-3xl sm:text-5xl md:text-6xl font-light tracking-tight text-canvas-text max-w-3xl leading-[1.05] mb-6"
         >
           Tell us the institution. <br className="hidden sm:inline" />
           <span className="font-serif italic text-spectrum font-normal">PRISM</span> finds the rest.
