@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -18,17 +18,19 @@ import {
   UserCheck,
   Sliders,
   LogOut,
-  ChevronRight,
   Search,
   Sparkles,
-  Command,
   Menu,
   X,
+  Shield,
+  Globe,
+  ChevronDown,
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { api, getStoredUser, clearStoredSession, UserSession } from "@/lib/api";
-import PrismMark from "@/components/landing/PrismMark";
 import CommandPalette from "@/components/motion/CommandPalette";
 import ThemeToggle from "@/components/theme/ThemeToggle";
+import PrismMark from "@/components/landing/PrismMark";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -42,65 +44,28 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const [loading, setLoading] = useState(true);
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [istTime, setIstTime] = useState("");
+  const [moreMenuOpen, setMoreMenuOpen] = useState(false);
+  const moreMenuRef = useRef<HTMLDivElement | null>(null);
 
-  // Load persisted sidebar state from localStorage
+  // Close dropdowns on outside click or route navigation
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem("prism_sidebar_collapsed");
-      if (saved !== null) {
-        setSidebarCollapsed(saved === "true");
+    const handleClickOutside = (e: MouseEvent) => {
+      if (moreMenuRef.current && !moreMenuRef.current.contains(e.target as Node)) {
+        setMoreMenuOpen(false);
       }
-    } catch {}
-  }, []);
-
-  const toggleSidebar = () => {
-    setSidebarCollapsed((prev) => {
-      const next = !prev;
-      try {
-        localStorage.setItem("prism_sidebar_collapsed", String(next));
-      } catch {}
-      return next;
-    });
-  };
-
-  // Live ticking IST clock
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      const timeStr = now.toLocaleTimeString("en-GB", {
-        timeZone: "Asia/Kolkata",
-        hour12: false,
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      });
-      setIstTime(timeStr);
     };
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Close mobile drawer on route navigation
   useEffect(() => {
     setMobileMenuOpen(false);
+    setMoreMenuOpen(false);
   }, [pathname]);
 
   useEffect(() => {
-    // Unregister any stale legacy service workers on localhost
-    if (typeof window !== "undefined" && "serviceWorker" in navigator) {
-      navigator.serviceWorker.getRegistrations().then((registrations) => {
-        for (const reg of registrations) {
-          reg.unregister();
-        }
-      });
-    }
-
     const isPublicPage = pathname === "/" || pathname === "/login";
 
-    // If on public page (landing or login), do not require auth or render app layout
     if (isPublicPage) {
       setLoading(false);
       return;
@@ -115,7 +80,8 @@ export default function AppLayout({ children }: AppLayoutProps) {
     setLoading(false);
 
     // Fetch unread count
-    api.getUnreadCount()
+    api
+      .getUnreadCount()
       .then((res) => setUnreadCount(res.unread_count))
       .catch(() => {});
   }, [pathname, router]);
@@ -146,320 +112,306 @@ export default function AppLayout({ children }: AppLayoutProps) {
     );
   }
 
-  const navItems = [
+  interface NavItem {
+    label: string;
+    href: string;
+    icon: any;
+    badge?: string;
+  }
+
+  // Primary 7 Navigation modules matching the reference horizontal capsule
+  const primaryNavItems: NavItem[] = [
     { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     { label: "Institutions", href: "/institutions", icon: Building2 },
     { label: "Complaints", href: "/complaints", icon: FileText },
     { label: "AI Intelligence", href: "/ai-matching", icon: BrainCircuit, badge: "AI" },
     { label: "Related Cases", href: "/related-cases", icon: GitFork },
-    { label: "Case Allocation", href: "/allocation", icon: Users },
+    { label: "Allocations", href: "/allocation", icon: Users },
     { label: "Coordination", href: "/coordination", icon: MessagesSquare },
+  ];
+
+  // Secondary items accessed via the "More" dropdown
+  const secondaryNavItems: NavItem[] = [
     { label: "Workflows", href: "/workflows", icon: GitPullRequest },
-    { label: "Notifications", href: "/notifications", icon: Bell, count: unreadCount },
     { label: "Reports", href: "/reports", icon: BarChart3 },
     { label: "Audit Logs", href: "/audit", icon: ShieldCheck },
     { label: "User Management", href: "/users", icon: UserCheck },
     { label: "System Settings", href: "/settings", icon: Sliders },
   ];
 
-  // Derive breadcrumbs
-  const pathParts = pathname.split("/").filter(Boolean);
-  const breadcrumb = pathParts.length > 0 ? pathParts[0].replace("-", " ") : "Dashboard";
+  const allNavItems = [...primaryNavItems, ...secondaryNavItems];
+  const isSecondaryActive = secondaryNavItems.some(
+    (item) => pathname === item.href || pathname.startsWith(item.href)
+  );
 
   return (
     <div className="min-h-screen flex flex-col bg-canvas text-canvas-text selection:bg-saffron/30 selection:text-white film-grain">
-      {/* Tricolour hairline at the absolute top of the shell */}
+      {/* Tricolour hairline banner at the absolute top */}
       <div className="h-[2px] w-full bg-gradient-to-r from-saffron via-white to-emerald-500 sticky top-0 z-50 pointer-events-none" />
 
-      <div className="flex-1 flex relative">
-        {/* Ambient spectrum blur in corner (adapts for light and dark) */}
-        <div className="fixed top-0 right-0 w-[500px] h-[500px] bg-gradient-to-bl from-purple-500/5 via-cyan-500/5 to-transparent blur-[140px] pointer-events-none" />
-
-        {/* Mobile backdrop */}
-        {mobileMenuOpen && (
-          <div
-            className="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm z-40 lg:hidden transition-opacity"
-            onClick={() => setMobileMenuOpen(false)}
-          />
-        )}
-
-        {/* Sidebar - Editorial Shell with Hairline Borders */}
-        <aside
-          className={`bg-[#FBFAF7] dark:bg-[#0A0C0F] text-canvas-muted flex flex-col fixed inset-y-0 top-[2px] z-50 border-r border-hairline backdrop-blur-md transition-all duration-300 ease-in-out ${
-            sidebarCollapsed ? "lg:w-[72px]" : "lg:w-64"
-          } w-64 ${
-            mobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-          }`}
-        >
-          {/* Brand Header */}
-          <div
-            className={`h-16 flex items-center border-b border-hairline bg-[#F5F4F0] dark:bg-[#07090C] transition-all duration-300 ${
-              sidebarCollapsed ? "justify-center px-2" : "justify-between px-4"
-            }`}
+      {/* Floating Horizontal Navbar matching the reference design */}
+      <header className="sticky top-[2px] z-40 w-full py-3 px-4 sm:px-6 lg:px-8 bg-canvas/80 backdrop-blur-md border-b border-hairline/60">
+        <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-3">
+          {/* Left Island: Brand Pill (matching [shield ASTRA 26]) */}
+          <Link
+            href="/dashboard"
+            className="flex items-center gap-2.5 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full border border-hairline bg-canvas-card text-canvas-text shadow-xs hover:border-hairline-strong transition-all shrink-0 select-none group"
           >
-            <Link href="/" className="flex items-center gap-3 group overflow-hidden">
-              <PrismMark size={sidebarCollapsed ? 28 : 32} variant="nav" />
-              {!sidebarCollapsed && (
-                <div className="truncate">
-                  <div className="flex items-center gap-2">
-                    <span className="font-light tracking-tight text-canvas-text text-base">
-                      PRISM
-                    </span>
-                    <span className="text-[9px] font-mono tracking-widest px-1.5 py-0.2 rounded-full border border-hairline text-canvas-muted bg-canvas-card group-hover:border-saffron/40 transition-colors">
-                      GOV
-                    </span>
-                  </div>
-                  <p className="text-[9px] font-mono uppercase tracking-widest text-canvas-muted/70 truncate">
-                    COORDINATION PLATFORM
-                  </p>
-                </div>
-              )}
-            </Link>
+            <div className="w-6 h-6 rounded-full bg-black dark:bg-white text-white dark:text-black flex items-center justify-center p-1 shadow-xs group-hover:scale-105 transition-transform">
+              <Shield className="w-3.5 h-3.5" />
+            </div>
+            <div className="flex items-center gap-1 font-mono">
+              <span className="font-black text-sm tracking-wide text-canvas-text group-hover:text-saffron transition-colors">
+                PRISM
+              </span>
+              <span className="text-[11px] font-bold text-canvas-muted">26</span>
+            </div>
+          </Link>
 
-            {/* Mobile close toggle */}
-            <button
-              onClick={() => setMobileMenuOpen(false)}
-              className="lg:hidden p-1.5 text-canvas-muted hover:text-canvas-text rounded-lg transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-
-          {/* Navigation Items */}
-          <nav className={`flex-1 overflow-y-auto py-4 space-y-1 ${sidebarCollapsed ? "px-2" : "px-3"}`}>
-            {!sidebarCollapsed && (
-              <div className="px-3 pb-2 text-[10px] font-mono tracking-widest text-canvas-faint uppercase">
-                PLATFORM MODULES
-              </div>
-            )}
-            {sidebarCollapsed && (
-              <div className="pb-2 flex justify-center">
-                <div className="w-4 h-px bg-hairline" />
-              </div>
-            )}
-            {navItems.map((item) => {
+          {/* Center Island: Module Capsule Navigation */}
+          <nav className="hidden lg:flex items-center gap-1 p-1 rounded-full border border-hairline bg-canvas-card/90 dark:bg-canvas-card/90 shadow-xs backdrop-blur-md">
+            {primaryNavItems.map((item) => {
               const isActive =
                 pathname === item.href ||
                 (item.href !== "/dashboard" && pathname.startsWith(item.href));
-              const Icon = item.icon;
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`relative flex items-center rounded-xl text-xs font-sans transition-all duration-200 group ${
-                    sidebarCollapsed ? "justify-center p-2.5" : "justify-between px-3 py-2"
-                  } ${
+                  className={`relative px-3.5 py-1.5 rounded-full text-xs font-sans tracking-wide transition-all select-none flex items-center gap-1.5 ${
                     isActive
-                      ? "bg-canvas-card text-canvas-text border border-hairline shadow-soft"
-                      : "text-canvas-muted hover:bg-canvas-subtle hover:text-canvas-text hover:translate-x-0.5 border border-transparent"
+                      ? "bg-white text-black dark:bg-white dark:text-black font-semibold shadow-xs"
+                      : "text-canvas-muted hover:text-canvas-text hover:bg-canvas-subtle/80"
                   }`}
-                  title={sidebarCollapsed ? item.label : undefined}
                 >
-                  {/* Active Spectrum Left Edge Indicator */}
-                  {isActive && (
-                    <div className="absolute left-0 inset-y-2 w-1 rounded-r-full bg-gradient-to-b from-purple-500 via-cyan-400 to-saffron" />
-                  )}
-
-                  <div className={`flex items-center ${sidebarCollapsed ? "justify-center" : "gap-3"}`}>
-                    <Icon
-                      className={`w-4 h-4 transition-colors shrink-0 ${
-                        isActive
-                          ? "text-saffron drop-shadow-[0_0_8px_rgba(242,140,40,0.5)]"
-                          : "text-canvas-muted group-hover:text-canvas-text"
-                      }`}
-                    />
-                    {!sidebarCollapsed && <span className="truncate">{item.label}</span>}
-                  </div>
-
-                  {!sidebarCollapsed && item.badge && (
-                    <span className="inline-flex items-center gap-1 text-[9px] font-mono font-medium tracking-wider px-1.5 py-0.5 rounded-full border border-purple-500/40 bg-purple-500/15 text-purple-600 dark:text-purple-300 shadow-[0_0_10px_rgba(168,85,247,0.15)]">
-                      <Sparkles className="w-2.5 h-2.5 text-purple-500 dark:text-purple-300 animate-pulse" />
+                  <span>{item.label}</span>
+                  {item.badge && (
+                    <span className="text-[9px] font-mono px-1 py-0.2 rounded-full bg-purple-500/15 text-purple-600 dark:text-purple-400 border border-purple-500/30">
                       {item.badge}
                     </span>
-                  )}
-
-                  {!sidebarCollapsed && typeof item.count === "number" && item.count > 0 && (
-                    <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded-full bg-rose-500/15 text-rose-600 dark:text-rose-300 border border-rose-500/30">
-                      {item.count}
-                    </span>
-                  )}
-
-                  {/* Collapsed dot indicators */}
-                  {sidebarCollapsed && typeof item.count === "number" && item.count > 0 && (
-                    <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-canvas animate-pulse" />
-                  )}
-                  {sidebarCollapsed && item.badge && (
-                    <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-purple-400" />
-                  )}
-
-                  {/* Floating tooltip on hover when collapsed */}
-                  {sidebarCollapsed && (
-                    <div className="hidden lg:group-hover:flex absolute left-full ml-3 px-2.5 py-1 bg-canvas-card border border-hairline-strong rounded-lg text-xs font-mono text-canvas-text shadow-card whitespace-nowrap z-50 items-center gap-2 pointer-events-none">
-                      <span>{item.label}</span>
-                      {item.badge && (
-                        <span className="text-[9px] px-1 rounded bg-purple-500/20 text-purple-400 border border-purple-500/30">
-                          {item.badge}
-                        </span>
-                      )}
-                      {typeof item.count === "number" && item.count > 0 && (
-                        <span className="text-[9px] px-1 rounded bg-rose-500/20 text-rose-400 border border-rose-500/30">
-                          {item.count}
-                        </span>
-                      )}
-                    </div>
                   )}
                 </Link>
               );
             })}
+
+            {/* "More" Dropdown for secondary platform tools */}
+            <div className="relative" ref={moreMenuRef}>
+              <button
+                onClick={() => setMoreMenuOpen(!moreMenuOpen)}
+                className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-sans tracking-wide transition-all ${
+                  isSecondaryActive
+                    ? "bg-white text-black dark:bg-white dark:text-black font-semibold shadow-xs"
+                    : "text-canvas-muted hover:text-canvas-text hover:bg-canvas-subtle/80"
+                }`}
+              >
+                <span>More</span>
+                <ChevronDown
+                  className={`w-3 h-3 transition-transform ${moreMenuOpen ? "rotate-180" : ""}`}
+                />
+              </button>
+
+              <AnimatePresence>
+                {moreMenuOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute right-0 mt-2 w-48 rounded-xl border border-hairline bg-canvas-card/95 backdrop-blur-md shadow-card p-1.5 z-50 space-y-0.5"
+                  >
+                    {secondaryNavItems.map((item) => {
+                      const isActive =
+                        pathname === item.href || pathname.startsWith(item.href);
+                      const Icon = item.icon;
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          onClick={() => setMoreMenuOpen(false)}
+                          className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-sans transition-colors ${
+                            isActive
+                              ? "bg-canvas-text text-canvas font-semibold shadow-xs"
+                              : "text-canvas-muted hover:text-canvas-text hover:bg-canvas-subtle"
+                          }`}
+                        >
+                          <Icon className="w-3.5 h-3.5" />
+                          <span>{item.label}</span>
+                        </Link>
+                      );
+                    })}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </nav>
 
-          {/* User Status Footer */}
-          <div className="p-3 border-t border-hairline bg-[#F5F4F0] dark:bg-[#07090C]">
-            {sidebarCollapsed ? (
-              <div className="flex flex-col items-center gap-2">
-                <div
-                  className="w-8 h-8 rounded-lg border border-hairline bg-canvas-card text-saffron flex items-center justify-center text-xs font-mono font-bold shadow-xs cursor-default"
-                  title={`${user?.full_name} (${user?.role_display || user?.role})`}
-                >
-                  {user?.full_name ? user.full_name[0] : "P"}
-                </div>
-                <button
-                  onClick={handleLogout}
-                  title="Sign Out"
-                  className="p-1.5 text-canvas-muted hover:text-rose-500 hover:bg-rose-500/10 rounded-lg transition-colors"
-                >
-                  <LogOut className="w-4 h-4" />
-                </button>
-              </div>
-            ) : (
-              <div className="flex items-center justify-between px-2 py-1.5 rounded-lg border border-hairline bg-canvas-card">
-                <div className="truncate mr-2">
-                  <p className="text-xs font-medium text-canvas-text truncate">
-                    {user?.full_name}
-                  </p>
-                  <div className="flex items-center gap-1.5 mt-0.5 font-mono text-[10px]">
-                    <span className="text-saffron bg-saffron/10 px-1 py-0.2 rounded border border-saffron/20 font-medium">
-                      {user?.role_display || user?.role}
-                    </span>
-                    {user?.bureau_code && (
-                      <span className="text-canvas-muted bg-canvas-subtle px-1 py-0.2 rounded">
-                        {user.bureau_code}
-                      </span>
-                    )}
-                  </div>
-                </div>
-                <button
-                  onClick={handleLogout}
-                  title="Sign Out"
-                  className="p-1.5 text-canvas-muted hover:text-rose-500 hover:bg-rose-500/10 rounded-lg transition-colors"
-                >
-                  <LogOut className="w-4 h-4" />
-                </button>
-              </div>
-            )}
-          </div>
-        </aside>
+          {/* Right Island: Language, Theme, Notifications & User Avatar */}
+          <div className="flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 rounded-full border border-hairline bg-canvas-card text-canvas-text shadow-xs backdrop-blur-md shrink-0">
+            {/* Search Platform Shortcut */}
+            <button
+              onClick={() => setCommandPaletteOpen(true)}
+              className="p-1.5 text-canvas-muted hover:text-canvas-text hover:bg-canvas-subtle rounded-full transition-colors"
+              title="Search platform (Ctrl+K)"
+              aria-label="Search"
+            >
+              <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            </button>
 
-        {/* Main Content Area - Full width on mobile, padded for desktop */}
-        <div
-          className={`flex-1 flex flex-col min-h-[calc(100vh-2px)] w-full overflow-x-hidden transition-all duration-300 ease-in-out ${
-            sidebarCollapsed ? "lg:pl-[72px]" : "lg:pl-64"
-          }`}
-        >
-          {/* Top Header Bar */}
-          <header className="h-16 bg-canvas/80 dark:bg-[#08090B]/80 backdrop-blur-md border-b border-hairline flex items-center justify-between px-3 sm:px-6 lg:px-8 sticky top-[2px] z-30 shadow-xs">
-            {/* Left: 3-line Hamburger Menu Toggle (Mobile + Desktop) + Search / Breadcrumbs */}
-            <div className="flex items-center gap-1.5 sm:gap-3">
-              <button
-                onClick={() => {
-                  if (typeof window !== "undefined" && window.innerWidth < 1024) {
-                    setMobileMenuOpen((prev) => !prev);
-                  } else {
-                    toggleSidebar();
-                  }
-                }}
-                className="p-2 -ml-1 text-canvas-muted hover:text-canvas-text hover:bg-canvas-card rounded-lg border border-transparent hover:border-hairline transition-all shadow-xs"
-                title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-                aria-label="Toggle navigation sidebar"
-              >
-                <Menu className="w-5 h-5 text-canvas-text" />
-              </button>
-
-              <button
-                onClick={() => setCommandPaletteOpen(true)}
-                className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-lg border border-hairline bg-canvas-card text-xs font-mono text-canvas-muted hover:text-canvas-text hover:border-hairline-strong transition-all group shadow-xs"
-              >
-                <Search className="w-3.5 h-3.5 text-saffron" />
-                <span className="hidden sm:inline">Search platform...</span>
-                <span className="sm:hidden text-[10px]">Search</span>
-                <span className="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-canvas-subtle text-[10px] text-canvas-muted font-mono">
-                  <Command className="w-2.5 h-2.5" /> K
-                </span>
-              </button>
-
-              <div className="hidden lg:flex items-center space-x-2 text-xs font-mono text-canvas-muted">
-                <span>PRISM</span>
-                <ChevronRight className="w-3 h-3 text-canvas-faint" />
-                <span className="text-canvas-text capitalize">{breadcrumb}</span>
-              </div>
+            {/* Language / Node Indicator matching reference */}
+            <div className="hidden md:flex items-center gap-1 text-xs font-mono text-canvas-muted px-2 py-0.5 rounded-full hover:bg-canvas-subtle transition-colors cursor-pointer select-none">
+              <Globe className="w-3.5 h-3.5" />
+              <span>English</span>
+              <ChevronDown className="w-3 h-3" />
             </div>
 
-            {/* Right: Live IST Clock + Theme Toggle + Notification Bell + Profile */}
-            <div className="flex items-center space-x-1.5 sm:space-x-3.5">
-              {/* Live IST Clock */}
-              <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-full border border-hairline bg-canvas-card text-[11px] font-mono shadow-xs">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
-                <span className="text-canvas-muted">IST:</span>
-                <span className="text-canvas-text tabular-nums tracking-wider font-medium">
-                  {istTime || "12:00:00"}
-                </span>
-              </div>
-
-              {/* Status Badge */}
-              <div className="hidden md:block">
-                <span className="inline-flex items-center gap-1.5 text-[10px] font-mono tracking-wider text-saffron bg-saffron/10 border border-saffron/20 px-2 py-0.5 rounded-full font-medium">
-                  AICTE SECURE NODE
-                </span>
-              </div>
-
-              {/* Theme Toggle (Light / Dark / System with Circular Reveal) */}
+            {/* Theme Toggle (Sun / Moon) */}
+            <div className="scale-90">
               <ThemeToggle />
+            </div>
 
-              {/* Notification Bell */}
-              <Link
-                href="/notifications"
-                className="relative p-2 text-canvas-muted hover:text-canvas-text hover:bg-canvas-subtle rounded-lg transition-colors"
-                title="Notifications"
-              >
-                <Bell className="w-4 h-4" />
-                {unreadCount > 0 && (
-                  <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-saffron rounded-full ring-2 ring-canvas animate-pulse" />
-                )}
-              </Link>
+            {/* Notifications Bell */}
+            <Link
+              href="/notifications"
+              className="relative p-1.5 text-canvas-muted hover:text-canvas-text hover:bg-canvas-subtle rounded-full transition-colors"
+              title="Notifications"
+            >
+              <Bell className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              {unreadCount > 0 && (
+                <span className="absolute top-0.5 right-0.5 w-2 h-2 bg-saffron rounded-full ring-2 ring-canvas animate-pulse" />
+              )}
+            </Link>
 
-              <div className="h-5 w-px bg-hairline hidden sm:block" />
+            {/* User Avatar Circle */}
+            <div
+              className="w-7 h-7 rounded-full bg-black dark:bg-white text-white dark:text-black flex items-center justify-center text-xs font-mono font-bold shadow-xs cursor-pointer select-none"
+              title={`${user?.full_name} (${user?.role_display || user?.role})`}
+            >
+              {user?.full_name ? user.full_name[0] : "S"}
+            </div>
 
-              {/* User Avatar */}
-              <div className="flex items-center space-x-2">
-                <div className="w-7 h-7 rounded-lg border border-hairline bg-canvas-card text-saffron flex items-center justify-center text-xs font-mono font-bold shadow-xs">
-                  {user?.full_name ? user.full_name[0] : "P"}
+            {/* Sign Out Action */}
+            <button
+              onClick={handleLogout}
+              title="Sign Out"
+              className="p-1.5 text-canvas-muted hover:text-rose-500 hover:bg-rose-500/10 rounded-full transition-colors"
+              aria-label="Sign out"
+            >
+              <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            </button>
+
+            {/* Mobile Hamburger Menu button on small screens */}
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className="lg:hidden p-1.5 text-canvas-muted hover:text-canvas-text hover:bg-canvas-subtle rounded-full"
+              aria-label="Open mobile navigation menu"
+            >
+              <Menu className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Full Mobile Navigation Overlay Drawer */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <div className="fixed inset-0 z-50 lg:hidden">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/70 backdrop-blur-sm"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", stiffness: 400, damping: 35 }}
+              className="fixed top-0 right-0 bottom-0 w-full max-w-sm bg-canvas-card border-l border-hairline shadow-2xl flex flex-col z-10 p-6 overflow-y-auto"
+            >
+              {/* Drawer Header */}
+              <div className="flex items-center justify-between pb-5 border-b border-hairline">
+                <div className="flex items-center gap-2 font-mono">
+                  <Shield className="w-4 h-4 text-saffron" />
+                  <span className="font-bold text-sm">PRISM 26</span>
                 </div>
-                <div className="hidden xl:block text-xs">
-                  <span className="font-medium text-canvas-text block leading-tight">
-                    {user?.full_name}
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="p-2 text-canvas-muted hover:text-canvas-text rounded-lg hover:bg-canvas-subtle"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* User Identity Banner */}
+              <div className="py-4 border-b border-hairline">
+                <p className="text-xs font-semibold text-canvas-text">{user?.full_name}</p>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-[10px] font-mono text-saffron bg-saffron/10 px-1.5 py-0.5 rounded border border-saffron/20 font-bold">
+                    {user?.role_display || user?.role}
                   </span>
+                  {user?.bureau_code && (
+                    <span className="text-[10px] font-mono text-canvas-muted bg-canvas-subtle px-1.5 py-0.5 rounded">
+                      {user.bureau_code}
+                    </span>
+                  )}
                 </div>
               </div>
-            </div>
-          </header>
 
-          {/* Page Content Body */}
-          <main className="flex-1 p-3 sm:p-6 lg:p-8 overflow-y-auto max-w-full">{children}</main>
-        </div>
-      </div>
+              {/* Navigation Items List */}
+              <nav className="py-4 space-y-1 flex-1">
+                {allNavItems.map((item) => {
+                  const isActive =
+                    pathname === item.href ||
+                    (item.href !== "/dashboard" && pathname.startsWith(item.href));
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs font-sans transition-all ${
+                        isActive
+                          ? "bg-canvas-text text-canvas font-bold shadow-xs"
+                          : "text-canvas-muted hover:text-canvas-text hover:bg-canvas-subtle"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <Icon className="w-4 h-4" />
+                        <span>{item.label}</span>
+                      </div>
+                      {item.badge && (
+                        <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-purple-500/20 text-purple-400 border border-purple-500/30">
+                          {item.badge}
+                        </span>
+                      )}
+                    </Link>
+                  );
+                })}
+              </nav>
 
-      {/* Global ⌘K Command Palette */}
+              {/* Drawer Logout Button */}
+              <div className="pt-4 border-t border-hairline">
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border border-hairline text-rose-500 hover:bg-rose-500/10 font-mono text-xs font-bold uppercase tracking-wider transition-colors"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Sign Out</span>
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Main Page Content - Clean Full Width Container without Sidebar Indent */}
+      <main className="flex-1 w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {children}
+      </main>
+
+      {/* Command Palette Modal */}
       <CommandPalette
         isOpen={commandPaletteOpen}
         onClose={() => setCommandPaletteOpen(false)}
