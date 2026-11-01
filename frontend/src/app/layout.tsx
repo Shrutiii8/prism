@@ -51,15 +51,15 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-canvas text-canvas-text font-sans antialiased selection:bg-saffron/30 selection:text-white">
-        <LanguageProvider>
-          <ThemeProvider>
+        <ThemeProvider>
+          <LanguageProvider>
             <SmoothScrollProvider>
               <SmokeCursor />
               <CustomCursor />
               <AppLayout>{children}</AppLayout>
             </SmoothScrollProvider>
-          </ThemeProvider>
-        </LanguageProvider>
+          </LanguageProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

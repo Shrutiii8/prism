@@ -302,7 +302,8 @@ export class SmokeFluidEngine {
         p.x *= uAspectRatio;
         vec3 splat = exp(-dot(p, p) / max(1e-5, uRadius)) * uColor;
         vec3 base = texture2D(uTarget, vUv).xyz;
-        gl_FragColor = vec4(base + splat, 1.0);
+        // Softly clamp to avoid runaway blinding accumulation
+        gl_FragColor = vec4(clamp(base + splat, 0.0, 1.2), 1.0);
       }
     `;
 
@@ -450,15 +451,17 @@ export class SmokeFluidEngine {
           return;
         }
 
-        float alpha = clamp(maxVal * uOpacity, 0.0, 1.0);
+        // Reduced max alpha intensity (subtle translucent wisp)
+        float alpha = clamp(maxVal * uOpacity, 0.0, 0.38);
 
         if (uIsDark > 0.5) {
-          // Luminous smoke trail on dark canvas
-          gl_FragColor = vec4(dye, alpha);
+          // Soft rainbow hue trail: gentle intensity, delicate luminous mist
+          vec3 rainbowMist = dye * 0.60;
+          gl_FragColor = vec4(rainbowMist, alpha);
         } else {
           // Ink mist on warm paper canvas
           vec3 ink = mix(vec3(0.06, 0.08, 0.12), dye * 0.75, 0.3);
-          gl_FragColor = vec4(ink, alpha * 0.7);
+          gl_FragColor = vec4(ink, alpha * 0.55);
         }
       }
     `;
@@ -651,15 +654,22 @@ export class SmokeFluidEngine {
     const tintG = c1[1] + (c2[1] - c1[1]) * frac;
     const tintB = c1[2] + (c2[2] - c1[2]) * frac;
 
-    // Mix base smoke with spectrum tint
-    const base = this.isDark ? this.config.dark.dyeBase : this.config.light.inkBase;
-    const tintAmount = Math.min(0.55, this.config.spectrumTint * (0.8 + speed * 12));
-
-    return [
-      base[0] * (1 - tintAmount) + tintR * tintAmount,
-      base[1] * (1 - tintAmount) + tintG * tintAmount,
-      base[2] * (1 - tintAmount) + tintB * tintAmount,
-    ];
+    if (this.isDark) {
+      // Slightly rainbow hue: vibrant spectral color with soft gentle luminescence (never chalk white)
+      return [
+        tintR * 0.72 + 0.12,
+        tintG * 0.72 + 0.12,
+        tintB * 0.72 + 0.12,
+      ];
+    } else {
+      const base = this.config.light.inkBase;
+      const tintAmount = 0.35;
+      return [
+        base[0] * (1 - tintAmount) + tintR * tintAmount,
+        base[1] * (1 - tintAmount) + tintG * tintAmount,
+        base[2] * (1 - tintAmount) + tintB * tintAmount,
+      ];
+    }
   }
 
   private splat(x: number, y: number, dx: number, dy: number, color: [number, number, number]) {

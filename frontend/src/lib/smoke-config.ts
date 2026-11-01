@@ -34,13 +34,13 @@ export const SMOKE_CONFIG: SmokeConfig = {
   simResolution: 128,
   dyeResolution: 768,
   pressureIterations: 18,
-  velocityDissipation: 0.97,
-  dyeDissipation: 0.985,
-  curl: 22,
-  splatRadius: 0.0025,
-  splatForce: 5500,
-  maxOpacity: 0.45,
-  spectrumTint: 0.22,
+  velocityDissipation: 0.96,
+  dyeDissipation: 0.962, // Faster graceful decay (~1.2s) so smoke does not accumulate
+  curl: 20,
+  splatRadius: 0.0018, // Delicate, elegant wisp instead of a dense cloud
+  splatForce: 3400, // Reduced force for subtle motion
+  maxOpacity: 0.24, // Reduced intensity: soft, translucent and non-intrusive
+  spectrumTint: 0.75, // Rich rainbow hue
   idlePauseThreshold: 0.002,
   intensityByRoute: {
     home: 1.0,
@@ -48,14 +48,13 @@ export const SMOKE_CONFIG: SmokeConfig = {
     app: 0.3,
   },
   dark: {
-    dyeBase: [0.94, 0.96, 0.98], // Soft silver/white mist
-    opacityMult: 1.0,
-    bloomGain: 1.1,
+    dyeBase: [0.35, 0.38, 0.45], // Soft iridescent slate (never chalk white)
+    opacityMult: 0.70, // Reduced intensity
+    bloomGain: 0.75,
   },
   light: {
     inkBase: [0.08, 0.1, 0.14], // Deep navy ink mist
-    opacityMult: 0.65, // Soft translucent ink on paper
-    bloomGain: 0.85,
+    opacityMult: 0.50, // Soft translucent ink on paper
+    bloomGain: 0.80,
   },
 };
-
