@@ -52,6 +52,23 @@ export default function SystemSettingsPage() {
     type: "info",
   });
 
+  const [cursorEffects, setCursorEffects] = useState<"on" | "reduced" | "off">("on");
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("prism_cursor_effects") as "on" | "reduced" | "off" | null;
+      if (saved) setCursorEffects(saved);
+    } catch {}
+  }, []);
+
+  const handleCursorEffectsChange = (mode: "on" | "reduced" | "off") => {
+    setCursorEffects(mode);
+    try {
+      localStorage.setItem("prism_cursor_effects", mode);
+      window.dispatchEvent(new StorageEvent("storage", { key: "prism_cursor_effects", newValue: mode }));
+    } catch {}
+  };
+
   useEffect(() => {
     loadSettings();
   }, []);
@@ -593,6 +610,63 @@ export default function SystemSettingsPage() {
                 <span>{savingKey === "system_banner" ? "COMMITTING..." : "SAVE BANNER SETTINGS"}</span>
               </button>
             </div>
+          </div>
+        </div>
+
+        {/* SECTION 5: Cursor Fluid Effects & Interactive Trails */}
+        <div className="rounded-2xl border border-hairline bg-canvas-card overflow-hidden shadow-soft">
+          <div className="px-5 sm:px-6 py-4 sm:py-5 border-b border-hairline bg-canvas-surface/50 flex items-center justify-between font-mono">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400">
+                <Sparkles className="w-4 h-4" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-purple-600 dark:text-purple-400 text-xs font-bold">CUE 13.5</span>
+                  <span className="text-canvas-muted">·</span>
+                  <h3 className="text-canvas-text text-xs font-medium uppercase tracking-wider">
+                    Interactive Fluid Smoke & Cursor Simulation
+                  </h3>
+                </div>
+                <p className="text-[11px] text-canvas-muted font-sans font-normal mt-0.5">
+                  Real-time GPU Navier-Stokes fluid-smoke simulation that tracks pointer velocity with light-refracted dispersion.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-5 sm:p-8 space-y-5 font-mono text-xs">
+            <div className="space-y-2">
+              <label className="text-canvas-muted uppercase text-[10px] block">
+                Simulation Intensity & Quality Setting
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {[
+                  { id: "on", label: "ON (Full GPU Fluid)", desc: "Atmospheric Navier-Stokes smoke simulation" },
+                  { id: "reduced", label: "REDUCED (Low Intensity)", desc: "Soft subtle trail with accelerated decay" },
+                  { id: "off", label: "OFF (Standard Pointer)", desc: "Disable fluid canvas rendering completely" },
+                ].map((opt) => (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={() => handleCursorEffectsChange(opt.id as "on" | "reduced" | "off")}
+                    className={`p-3.5 rounded-xl border text-left transition-all flex flex-col justify-between ${
+                      cursorEffects === opt.id
+                        ? "bg-canvas-text text-canvas border-canvas-text shadow-soft"
+                        : "bg-canvas-surface border-hairline text-canvas-muted hover:text-canvas-text hover:bg-canvas-subtle"
+                    }`}
+                  >
+                    <span className="font-bold text-xs">{opt.label}</span>
+                    <span className="text-[10px] opacity-75 mt-1 block font-sans font-normal">
+                      {opt.desc}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+            <p className="text-[11px] text-canvas-faint font-sans pt-1">
+              Note: Simulation automatically enters an idle pause (0% GPU) when the cursor is stationary and automatically degrades on low-power devices.
+            </p>
           </div>
         </div>
       </div>

@@ -12,29 +12,28 @@ interface LandingNavProps {
 }
 
 export default function LandingNav({ onRequestDemo }: LandingNavProps) {
-  const [istTime, setIstTime] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+  const [activeIdx, setActiveIdx] = useState(0);
 
-  // Real-time ticking clock in Asia/Kolkata time
+  // Scroll section tracking to keep active nav selection synced
   useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      const timeStr = now.toLocaleTimeString("en-GB", {
-        timeZone: "Asia/Kolkata",
-        hour12: false,
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      });
-      setIstTime(`IST ${timeStr}`);
+    const sectionIds = ["bureaus", "platform", "intelligence", "personas", "impact", "security", "track"];
+    const handleScrollSections = () => {
+      const scrollY = window.scrollY + 180;
+      for (let i = sectionIds.length - 1; i >= 0; i--) {
+        const el = document.getElementById(sectionIds[i]);
+        if (el && scrollY >= el.offsetTop) {
+          setActiveIdx(i);
+          break;
+        }
+      }
     };
-
-    updateTime();
-    const timer = setInterval(updateTime, 1000);
-    return () => clearInterval(timer);
+    window.addEventListener("scroll", handleScrollSections, { passive: true });
+    return () => window.removeEventListener("scroll", handleScrollSections);
   }, []);
 
   // Hide on scroll-down, reveal on scroll-up
@@ -73,14 +72,14 @@ export default function LandingNav({ onRequestDemo }: LandingNavProps) {
         transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
         className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
           isScrolled
-            ? "bg-canvas/85 backdrop-blur-md border-b border-hairline shadow-xs"
+            ? "bg-canvas/90 backdrop-blur-md border-b border-hairline shadow-xs"
             : "bg-transparent border-b border-transparent"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-18 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 h-18 sm:h-20 flex items-center justify-between">
           {/* Left: Logo & Wordmark */}
-          <Link href="/" className="flex items-center gap-2 sm:gap-3 group shrink-0">
-            <PrismMark variant="nav" size={26} />
+          <Link href="/" className="flex items-center gap-3 group shrink-0">
+            <PrismMark variant="nav" size={28} />
             <div className="flex flex-col">
               <span className="font-mono text-sm sm:text-base font-black tracking-wider text-canvas-text group-hover:text-saffron transition-colors">
                 PRISM
@@ -91,29 +90,67 @@ export default function LandingNav({ onRequestDemo }: LandingNavProps) {
             </div>
           </Link>
 
-          {/* Desktop Links */}
-          <nav className="hidden lg:flex items-center gap-6 xl:gap-7">
-            {navLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                className="font-mono text-[11px] uppercase tracking-widest text-canvas-muted hover:text-canvas-text transition-colors relative py-1"
-              >
-                {link.label}
-              </a>
-            ))}
+          {/* Desktop Links with Rolling Ball / Gliding Pill Selection */}
+          <nav
+            onMouseLeave={() => setHoveredIdx(null)}
+            className="hidden lg:flex items-center gap-6 xl:gap-8 2xl:gap-10"
+          >
+            {navLinks.map((link, idx) => {
+              const isSelected = (hoveredIdx !== null ? hoveredIdx : activeIdx) === idx;
+              return (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  onClick={() => setActiveIdx(idx)}
+                  onMouseEnter={() => setHoveredIdx(idx)}
+                  className="relative px-3.5 py-1.5 font-sans text-xs sm:text-[13px] tracking-wide transition-colors duration-200 select-none group"
+                >
+                  {/* Rolling Pill Selection Indicator */}
+                  {isSelected && (
+                    <motion.div
+                      layoutId="nav-rolling-pill"
+                      className="absolute inset-0 rounded-[4px] bg-white dark:bg-white shadow-card z-0"
+                      transition={{
+                        type: "spring",
+                        stiffness: 480,
+                        damping: 32,
+                        mass: 0.5,
+                      }}
+                    />
+                  )}
+
+                  <div className="relative z-10 flex flex-col items-center">
+                    <span
+                      className={`transition-colors duration-150 ${
+                        isSelected
+                          ? "text-black dark:text-black font-semibold"
+                          : "text-canvas-muted group-hover:text-canvas-text"
+                      }`}
+                    >
+                      {link.label}
+                    </span>
+                    {/* Underline accent beneath the word inside the white pill matching reference */}
+                    {isSelected ? (
+                      <motion.span
+                        layoutId="nav-pill-underline"
+                        className="w-full h-[1.5px] bg-black dark:bg-black rounded-full mt-[2px]"
+                        transition={{
+                          type: "spring",
+                          stiffness: 480,
+                          damping: 32,
+                        }}
+                      />
+                    ) : (
+                      <span className="w-full h-[1.5px] bg-transparent mt-[2px]" />
+                    )}
+                  </div>
+                </a>
+              );
+            })}
           </nav>
 
-          {/* Center/Right: Live Ticking Chip & CTAs */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            {/* Live IST clock chip */}
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-canvas-card border border-hairline font-mono text-[10px] text-canvas-muted shadow-xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span>{istTime || "IST --:--:--"}</span>
-              <span className="text-canvas-faint">·</span>
-              <span className="text-canvas-text font-semibold">v1.0</span>
-            </div>
-
+          {/* Right: Theme Toggle & CTAs */}
+          <div className="flex items-center gap-3 sm:gap-4">
             {/* Theme Toggle Button */}
             <ThemeToggle />
 
@@ -128,7 +165,7 @@ export default function LandingNav({ onRequestDemo }: LandingNavProps) {
             {/* Solid Official Login CTA */}
             <Link
               href="/login"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-md bg-canvas-text text-canvas font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-wider hover:opacity-90 transition-all hover:scale-[1.02] shadow-soft shrink-0"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-canvas-text text-canvas font-mono text-xs font-bold uppercase tracking-wider hover:opacity-90 transition-all hover:scale-[1.02] shadow-soft shrink-0"
               data-cursor="LOGIN"
             >
               <span>Official Login</span>
@@ -141,7 +178,7 @@ export default function LandingNav({ onRequestDemo }: LandingNavProps) {
               className="lg:hidden p-2 text-canvas-muted hover:text-canvas-text"
               aria-label="Open Navigation Menu"
             >
-              <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
+              <Menu className="w-6 h-6" />
             </button>
           </div>
         </div>
@@ -191,7 +228,32 @@ export default function LandingNav({ onRequestDemo }: LandingNavProps) {
               ))}
             </nav>
 
-            <div className="pt-8 border-t border-hairline flex flex-col gap-4">
+            <div className="pt-6 border-t border-hairline flex flex-col gap-4">
+              <div className="flex items-center justify-between text-xs font-mono">
+                <span className="text-canvas-muted">Cursor Smoke</span>
+                <div className="flex items-center gap-1 bg-canvas-card p-1 rounded-lg border border-hairline">
+                  {(["on", "reduced", "off"] as const).map((m) => (
+                    <button
+                      key={m}
+                      onClick={() => {
+                        try {
+                          localStorage.setItem("prism_cursor_effects", m);
+                          window.dispatchEvent(
+                            new StorageEvent("storage", {
+                              key: "prism_cursor_effects",
+                              newValue: m,
+                            })
+                          );
+                        } catch {}
+                      }}
+                      className="px-2 py-0.5 rounded text-[10px] uppercase font-bold text-canvas-muted hover:text-canvas-text hover:bg-canvas-subtle"
+                    >
+                      {m}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <Link
                 href="/login"
                 onClick={() => setMobileMenuOpen(false)}

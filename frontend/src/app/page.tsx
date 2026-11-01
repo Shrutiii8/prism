@@ -27,9 +27,6 @@ export default function LandingPage() {
   return (
     <SmoothScroll>
       <div className="relative min-h-screen bg-canvas text-canvas-text selection:bg-saffron/30 selection:text-white overflow-x-hidden film-grain">
-        {/* Custom cursor with interactive hover tracking */}
-        <CustomCursor />
-
         {/* 2.2s cinematic preloader with beam-strike and logo draw */}
         <Preloader onComplete={() => {}} />
 

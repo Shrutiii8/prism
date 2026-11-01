@@ -3,6 +3,8 @@ import "./globals.css";
 import AppLayout from "@/components/layout/AppLayout";
 import SmoothScrollProvider from "@/components/motion/SmoothScrollProvider";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import SmokeCursor from "@/components/effects/SmokeCursor";
+import CustomCursor from "@/components/landing/CustomCursor";
 
 export const metadata: Metadata = {
   title: "PRISM — Integrated Institution Complaint Monitoring & Coordination Platform",
@@ -42,6 +44,8 @@ export default function RootLayout({
       <body className="bg-canvas text-canvas-text font-sans antialiased selection:bg-saffron/30 selection:text-white">
         <ThemeProvider>
           <SmoothScrollProvider>
+            <SmokeCursor />
+            <CustomCursor />
             <AppLayout>{children}</AppLayout>
           </SmoothScrollProvider>
         </ThemeProvider>
