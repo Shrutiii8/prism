@@ -166,14 +166,14 @@ export default function HeroSection({ onRequestDemo }: HeroSectionProps) {
               <span>{hero.ctaSecondary}</span>
             </a>
 
-            {/* Download Web App Action Button */}
+            {/* Download App Action Button */}
             <button
               onClick={handleDownloadClick}
               className="group inline-flex items-center gap-2 px-4 sm:px-5 py-3 sm:py-3.5 rounded-md border border-hairline hover:border-saffron/60 bg-canvas-card text-canvas-text font-mono text-xs font-bold uppercase tracking-wider hover:bg-canvas-subtle transition-all shadow-xs"
               data-cursor="DOWNLOAD"
             >
               <Download className="w-3.5 h-3.5 text-saffron group-hover:translate-y-0.5 transition-transform" />
-              <span>Download Web App</span>
+              <span>Download App</span>
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse ml-0.5" />
             </button>
           </motion.div>

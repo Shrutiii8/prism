@@ -80,7 +80,7 @@ export default function InstallAppModal({
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "PRISM-WebApp.url";
+    a.download = "PRISM-App.url";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -140,7 +140,7 @@ export default function InstallAppModal({
               <div>
                 <div className="flex items-center gap-2">
                   <h3 className="font-sans text-lg font-bold text-canvas-text">
-                    Install PRISM Web App
+                    Install PRISM App
                   </h3>
                   <span className="font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-saffron/15 text-saffron border border-saffron/30 font-bold">
                     PWA Ready
@@ -307,7 +307,7 @@ export default function InstallAppModal({
 
             {/* Footer Copy Link */}
             <div className="mt-4 flex items-center justify-between pt-3 text-[11px] text-canvas-muted border-t border-hairline">
-              <span>Share webapp URL:</span>
+              <span>Share app URL:</span>
               <button
                 onClick={handleCopyLink}
                 className="inline-flex items-center gap-1.5 font-mono text-[11px] text-saffron hover:underline"
@@ -322,3 +322,4 @@ export default function InstallAppModal({
     </AnimatePresence>
   );
 }
+
