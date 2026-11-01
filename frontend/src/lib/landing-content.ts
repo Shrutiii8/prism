@@ -56,11 +56,11 @@ export const LANDING_CONTENT = {
     description:
       "A centralized regulatory oversight intelligence platform unifying complaint tracking across AICTE bureaus and regional offices into one institution case record.",
     org: "AICTE · Ministry of Education, Government of India",
-    problemStatement: "PS SIH26264 · Smart Automation",
+    problemStatement: "Smart Automation",
   },
 
   hero: {
-    eyebrow: "AICTE · INSTITUTION COMPLAINT MONITORING · SIH 2026",
+    eyebrow: "AICTE · INSTITUTION COMPLAINT MONITORING",
     headlineLine1: "Every complaint.",
     headlineLine2: "One institution.",
     headlineLine3: "One clock.",
@@ -69,7 +69,7 @@ export const LANDING_CONTENT = {
       "PRISM unifies complaints across AICTE's Regulation Bureau, Public Grievance Redressal Cell, Regional Offices and every other Bureau into one secure, AI-assisted platform.",
     ctaPrimary: "Open the dashboard",
     ctaSecondary: "Track a complaint",
-    metaRow: "Smart Automation · Software · SIH26264",
+    metaRow: "Smart Automation · Software",
   },
 
   liveStats: [

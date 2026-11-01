@@ -86,7 +86,7 @@ export default function LandingNav({ onRequestDemo }: LandingNavProps) {
                 PRISM
               </span>
               <span className="font-mono text-[9px] uppercase tracking-widest text-canvas-muted">
-                AICTE · SIH26264
+                AICTE
               </span>
             </div>
           </Link>
