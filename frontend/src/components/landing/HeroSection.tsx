@@ -7,6 +7,7 @@ import PrismMark from "./PrismMark";
 import { LANDING_CONTENT } from "@/lib/landing-content";
 import { ArrowUpRight, Search, ChevronDown, Download } from "lucide-react";
 import InstallAppModal from "./InstallAppModal";
+import { useLanguage } from "@/lib/i18n";
 
 interface HeroSectionProps {
   onRequestDemo?: () => void;
@@ -14,6 +15,7 @@ interface HeroSectionProps {
 
 export default function HeroSection({ onRequestDemo }: HeroSectionProps) {
   const { hero, liveStats } = LANDING_CONTENT;
+  const { t, language } = useLanguage();
   const [istTime, setIstTime] = useState("");
   const [overlapCount, setOverlapCount] = useState(342);
   const [isInstallModalOpen, setIsInstallModalOpen] = useState(false);
@@ -107,7 +109,7 @@ export default function HeroSection({ onRequestDemo }: HeroSectionProps) {
               transition={{ delay: 0.1, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
               className="text-4xl xs:text-5xl sm:text-6xl lg:text-7xl xl:text-[84px] font-black tracking-tight leading-[0.95] text-canvas-text break-words"
             >
-              Every complaint.
+              {language === "en" ? "Every complaint." : t("heroHeading1")}
             </motion.h1>
 
             <motion.h1
@@ -116,7 +118,7 @@ export default function HeroSection({ onRequestDemo }: HeroSectionProps) {
               transition={{ delay: 0.2, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
               className="text-4xl xs:text-5xl sm:text-6xl lg:text-7xl xl:text-[84px] font-black tracking-tight leading-[0.95] text-canvas-text break-words"
             >
-              One institution.
+              {language === "en" ? "One institution." : t("heroHeading2")}
             </motion.h1>
 
             <motion.h1
@@ -125,7 +127,7 @@ export default function HeroSection({ onRequestDemo }: HeroSectionProps) {
               transition={{ delay: 0.3, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
               className="text-4xl xs:text-5xl sm:text-6xl lg:text-7xl xl:text-[84px] font-serif italic tracking-tight leading-[0.95] text-spectrum break-words"
             >
-              {hero.accentWord}
+              {language === "en" ? hero.accentWord : t("heroHeading3")}
             </motion.h1>
           </div>
 
@@ -136,7 +138,7 @@ export default function HeroSection({ onRequestDemo }: HeroSectionProps) {
             transition={{ delay: 0.4, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="text-canvas-muted text-sm sm:text-base md:text-lg max-w-xl font-normal leading-relaxed"
           >
-            {hero.subheadline}
+            {language === "en" ? hero.subheadline : t("heroSubhead")}
           </motion.p>
 
           {/* CTAs */}
@@ -152,7 +154,7 @@ export default function HeroSection({ onRequestDemo }: HeroSectionProps) {
               className="group inline-flex items-center gap-2.5 px-5 sm:px-6 py-3 sm:py-3.5 rounded-md bg-canvas-text text-canvas font-mono text-xs font-bold uppercase tracking-wider hover:opacity-90 transition-all hover:scale-[1.02] shadow-soft"
               data-cursor="OPEN"
             >
-              <span>{hero.ctaPrimary}</span>
+              <span>{language === "en" ? hero.ctaPrimary : t("openDashboard")}</span>
               <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </Link>
 
@@ -163,7 +165,7 @@ export default function HeroSection({ onRequestDemo }: HeroSectionProps) {
               data-cursor="TRACK"
             >
               <Search className="w-3.5 h-3.5 text-canvas-muted" />
-              <span>{hero.ctaSecondary}</span>
+              <span>{language === "en" ? hero.ctaSecondary : t("trackComplaint")}</span>
             </a>
 
             {/* Download App Action Button */}
@@ -173,7 +175,7 @@ export default function HeroSection({ onRequestDemo }: HeroSectionProps) {
               data-cursor="DOWNLOAD"
             >
               <Download className="w-3.5 h-3.5 text-saffron group-hover:translate-y-0.5 transition-transform" />
-              <span>Download App</span>
+              <span>{language === "en" ? "Download App" : t("downloadApp")}</span>
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse ml-0.5" />
             </button>
           </motion.div>

@@ -3,6 +3,7 @@ import "./globals.css";
 import AppLayout from "@/components/layout/AppLayout";
 import SmoothScrollProvider from "@/components/motion/SmoothScrollProvider";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { LanguageProvider } from "@/lib/i18n";
 import SmokeCursor from "@/components/effects/SmokeCursor";
 import CustomCursor from "@/components/landing/CustomCursor";
 
@@ -50,13 +51,15 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-canvas text-canvas-text font-sans antialiased selection:bg-saffron/30 selection:text-white">
-        <ThemeProvider>
-          <SmoothScrollProvider>
-            <SmokeCursor />
-            <CustomCursor />
-            <AppLayout>{children}</AppLayout>
-          </SmoothScrollProvider>
-        </ThemeProvider>
+        <LanguageProvider>
+          <ThemeProvider>
+            <SmoothScrollProvider>
+              <SmokeCursor />
+              <CustomCursor />
+              <AppLayout>{children}</AppLayout>
+            </SmoothScrollProvider>
+          </ThemeProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

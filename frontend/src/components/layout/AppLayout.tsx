@@ -31,6 +31,8 @@ import { api, getStoredUser, clearStoredSession, UserSession } from "@/lib/api";
 import CommandPalette from "@/components/motion/CommandPalette";
 import ThemeToggle from "@/components/theme/ThemeToggle";
 import PrismMark from "@/components/landing/PrismMark";
+import LanguageDropdown from "./LanguageDropdown";
+import { useLanguage } from "@/lib/i18n";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -112,6 +114,8 @@ export default function AppLayout({ children }: AppLayoutProps) {
     );
   }
 
+  const { t } = useLanguage();
+
   interface NavItem {
     label: string;
     href: string;
@@ -121,22 +125,22 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
   // Primary 7 Navigation modules matching the reference horizontal capsule
   const primaryNavItems: NavItem[] = [
-    { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { label: "Institutions", href: "/institutions", icon: Building2 },
-    { label: "Complaints", href: "/complaints", icon: FileText },
-    { label: "AI Intelligence", href: "/ai-matching", icon: BrainCircuit, badge: "AI" },
-    { label: "Related Cases", href: "/related-cases", icon: GitFork },
-    { label: "Allocations", href: "/allocation", icon: Users },
-    { label: "Coordination", href: "/coordination", icon: MessagesSquare },
+    { label: t("dashboard"), href: "/dashboard", icon: LayoutDashboard },
+    { label: t("institutions"), href: "/institutions", icon: Building2 },
+    { label: t("complaints"), href: "/complaints", icon: FileText },
+    { label: t("intelligence"), href: "/ai-matching", icon: BrainCircuit, badge: "AI" },
+    { label: t("relatedCases"), href: "/related-cases", icon: GitFork },
+    { label: t("allocations"), href: "/allocation", icon: Users },
+    { label: t("coordination"), href: "/coordination", icon: MessagesSquare },
   ];
 
   // Secondary items accessed via the "More" dropdown
   const secondaryNavItems: NavItem[] = [
-    { label: "Workflows", href: "/workflows", icon: GitPullRequest },
-    { label: "Reports", href: "/reports", icon: BarChart3 },
-    { label: "Audit Logs", href: "/audit", icon: ShieldCheck },
-    { label: "User Management", href: "/users", icon: UserCheck },
-    { label: "System Settings", href: "/settings", icon: Sliders },
+    { label: t("workflows"), href: "/workflows", icon: GitPullRequest },
+    { label: t("reports"), href: "/reports", icon: BarChart3 },
+    { label: t("auditLogs"), href: "/audit", icon: ShieldCheck },
+    { label: t("userManagement"), href: "/users", icon: UserCheck },
+    { label: t("systemSettings"), href: "/settings", icon: Sliders },
   ];
 
   const allNavItems = [...primaryNavItems, ...secondaryNavItems];
@@ -199,7 +203,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
                     : "text-canvas-muted hover:text-canvas-text hover:bg-canvas-subtle/80"
                 }`}
               >
-                <span>More</span>
+                <span>{t("more")}</span>
                 <ChevronDown
                   className={`w-3 h-3 transition-transform ${moreMenuOpen ? "rotate-180" : ""}`}
                 />
@@ -252,12 +256,8 @@ export default function AppLayout({ children }: AppLayoutProps) {
               <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
 
-            {/* Language / Node Indicator matching reference */}
-            <div className="hidden md:flex items-center gap-1 text-xs font-mono text-canvas-muted px-2 py-0.5 rounded-full hover:bg-canvas-subtle transition-colors cursor-pointer select-none">
-              <Globe className="w-3.5 h-3.5" />
-              <span>English</span>
-              <ChevronDown className="w-3 h-3" />
-            </div>
+            {/* Workable Language Selector supporting English, Hindi (हिन्दी), and Bangla (বাংলা) */}
+            <LanguageDropdown />
 
             {/* Theme Toggle (Sun / Moon) */}
             <div className="scale-90">
@@ -393,7 +393,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
                   className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border border-hairline text-rose-500 hover:bg-rose-500/10 font-mono text-xs font-bold uppercase tracking-wider transition-colors"
                 >
                   <LogOut className="w-4 h-4" />
-                  <span>Sign Out</span>
+                  <span>{t("signOut")}</span>
                 </button>
               </div>
             </motion.div>

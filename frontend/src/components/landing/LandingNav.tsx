@@ -6,6 +6,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import PrismMark from "./PrismMark";
 import { Menu, X, ArrowUpRight } from "lucide-react";
 import ThemeToggle from "@/components/theme/ThemeToggle";
+import LanguageDropdown from "@/components/layout/LanguageDropdown";
+import { useLanguage } from "@/lib/i18n";
 
 interface LandingNavProps {
   onRequestDemo?: () => void;
@@ -54,14 +56,16 @@ export default function LandingNav({ onRequestDemo }: LandingNavProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
+  const { t } = useLanguage();
+
   const navLinks = [
-    { label: "Bureaus", href: "#bureaus" },
-    { label: "Platform", href: "#platform" },
-    { label: "Intelligence", href: "#intelligence" },
-    { label: "Personas", href: "#personas" },
-    { label: "Impact", href: "#impact" },
-    { label: "Security", href: "#security" },
-    { label: "Track", href: "#track" },
+    { label: t("bureaus"), href: "#bureaus" },
+    { label: t("platform"), href: "#platform" },
+    { label: t("intelligence"), href: "#intelligence" },
+    { label: t("personas"), href: "#personas" },
+    { label: t("impact"), href: "#impact" },
+    { label: t("security"), href: "#security" },
+    { label: t("track"), href: "#track" },
   ];
 
   return (
@@ -149,18 +153,21 @@ export default function LandingNav({ onRequestDemo }: LandingNavProps) {
             })}
           </nav>
 
-          {/* Right: Theme Toggle & CTAs */}
-          <div className="flex items-center gap-3 sm:gap-4 shrink-0 ml-8 xl:ml-16">
+          {/* Right: Language Dropdown, Theme Toggle & CTAs */}
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-6 xl:ml-12">
+            {/* Workable Language Selector */}
+            <LanguageDropdown />
+
             {/* Theme Toggle Button */}
             <ThemeToggle />
 
             {/* Solid Official Login CTA */}
             <Link
               href="/login"
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-canvas-text text-canvas font-mono text-xs font-bold uppercase tracking-wider hover:opacity-90 transition-all hover:scale-[1.02] shadow-soft shrink-0"
+              className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-md bg-canvas-text text-canvas font-mono text-xs font-bold uppercase tracking-wider hover:opacity-90 transition-all hover:scale-[1.02] shadow-soft shrink-0"
               data-cursor="LOGIN"
             >
-              <span>Official Login</span>
+              <span>{t("officialLogin")}</span>
               <ArrowUpRight className="w-3.5 h-3.5" />
             </Link>
 
